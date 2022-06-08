@@ -36,8 +36,9 @@ function mopidy_player()
                     color = '0x3daee9'
                     song_time = string.gsub('-'..el_time, "-0", "-")
                 end
-                song = string_to_strings(song, 30)[1]
-                text_by_left ({x=53, y=y_start}, song, color, def.font, def.size)
+                song = string_to_strings(song, 33)
+                if song[2] ~= nil then song[1] = song[1] .. '…' end
+                text_by_left ({x=53, y=y_start}, trim(song[1]), color, def.font, def.size)
                 text_by_right({x=313, y=y_start}, song_time, color, def.font, def.size)
                 y_start = y_start + y_step
             end
@@ -100,7 +101,7 @@ function browser_player()
         local step = 15
         local title_parts = string_to_strings(title, 50)
         for title_part in pairs(title_parts) do
-            text_by_left ({x=5, y=start}, title_parts[title_part], def.color, def.font, def.size, nil, nil)
+            text_by_left ({x=5, y=start}, trim(title_parts[title_part]), def.color, def.font, def.size, nil, nil)
             start = start + step
         end
         text_by_left ({x=5, y=637}, artist, def.color, def.font, def.size, nil, nil)
