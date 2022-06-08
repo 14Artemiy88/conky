@@ -8,27 +8,10 @@ function mopidy_player()
     local current_t_a_al_d = trim(read_CLI('mpc current -f %title%/%artist%/%album%/%date%'))
     if string.len(current_t_a_al_d) > 0 then
         local current,artist,album,date = current_t_a_al_d:match('(.*)/(.*)/(.*)/(%d*)')
-        local tt_ct_p_tc_pt  = read_CLI('mpc status %totaltime%/%currenttime%/%songpos%/%length%/%percenttime%')
+        local tt_ct_p_tc_pt = read_CLI('mpc status %totaltime%/%currenttime%/%songpos%/%length%/%percenttime%')
         local tt_m,tt_s,ct_m,ct_s,current_num,total_count,_,pt = tt_ct_p_tc_pt:match('(%d+):(%d+)/(%d+):(%d+)/(%d+)/(%d+)/(%s+)(%d+)')
-        local playlist         = split(read_CLI('mpc playlist -f %title%/%time%'), '\n')
-
-        draw_dash_bar({
-            height = 7,
-            width = 310,
-            seg_width = 3,
-            seg_margin = 3,
-            start_x = 4,
-            y = 612,
-            value = tonumber(pt),
-            colors = {
-                { color = '0xcc0000', alpha = 1 },
-                { color = def.color, alpha = .3 },
-            }
-        })
-
         local u_el_time  = (tt_m * 60 + tt_s) - (ct_m * 60 + ct_s)
         local el_time    = os.date("%M:%S", u_el_time)
-
         local count = 5
         current_num = tonumber(current_num)
         local start = tonumber(total_count - count + 1)
@@ -38,7 +21,7 @@ function mopidy_player()
         local stop = start + count
         local el_total_time = 0
         local y_start = 635
-
+        local playlist = split(read_CLI('mpc playlist -f %title%/%time%'), '\n')
         for N in pairs(playlist) do
             local song, time_m, time_s = playlist[N]:match('(.*)/(%d+):(%d+)')
             if N > current_num then
@@ -53,6 +36,7 @@ function mopidy_player()
                     color = '0x3daee9'
                     song_time = string.gsub('-'..el_time, "-0", "-")
                 end
+                song = string_to_strings(song, 30)[1]
                 text_by_left ({x=53, y=y_start}, song, color, def.font, def.size)
                 text_by_right({x=313, y=y_start}, song_time, color, def.font, def.size)
                 y_start = y_start + y_step
@@ -60,12 +44,25 @@ function mopidy_player()
         end
 
         local total_time
-        if el_total_time / 60 / 60 >= 1 then
+        if el_total_time >= 3600 then
             total_time = os.date("-%X", el_total_time-5*60*60)
         else
             total_time = os.date("-%M:%S", el_total_time)
         end
         if string.len(date) > 0 then date = ' ('..date..')' else date = '' end
+        draw_dash_bar({
+            height = 7,
+            width = 310,
+            seg_width = 3,
+            seg_margin = 3,
+            start_x = 4,
+            y = 612,
+            value = tonumber(pt),
+            colors = {
+                { color = '0xcc0000', alpha = 1 },
+                { color = def.color, alpha = .3 },
+            }
+        })
         text_by_left  ({x=5, y=600}, artist, def.color, def.font, def.size, nil, weight_bold)
         text_by_right ({x=313, y=600}, album..date, def.color, def.font, def.size)
         display_image ({ coord = { x = 5, y = 625 }, img = '/tmp/album_cover.png'} )
@@ -99,9 +96,9 @@ function browser_player()
                 { color = def.color, alpha = .3 },
             }
         })
-        title_parts = string_to_strings(title, 50)
         local start = 673
         local step = 15
+        local title_parts = string_to_strings(title, 50)
         for title_part in pairs(title_parts) do
             text_by_left ({x=5, y=start}, title_parts[title_part], def.color, def.font, def.size, nil, nil)
             start = start + step
