@@ -81,11 +81,8 @@ function mopidy_player()
 end
 
 function browser_player()
-    local browser_player = trim(
-            read_CLI(
-                    "playerctl -p plasma-browser-integration metadata --format '{{ artist }}💩{{ title }}💩{{ mpris:length }}💩{{ position }}💩-{{ duration(mpris:length - position) }}'"
-                )
-            )
+    local command = "playerctl -p plasma-browser-integration metadata --format '{{ artist }}💩{{ title }}💩{{ mpris:length }}💩{{ position }}💩-{{ duration(mpris:length - position) }}'"
+    local browser_player = trim(read_CLI(command))
     if string.len(browser_player) > 0 then
         return draw_player(browser_player:match('(.*)💩(.*)💩(.*)💩(.*)💩(.*)'))
     end

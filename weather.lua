@@ -1,3 +1,4 @@
+--- Gismeteo api manual https://www.gismeteo.ru/api/ ---
 dofile (scripts .. "token.lua")
 local json = dofile (scripts .. "json.lua")
 
