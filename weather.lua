@@ -54,9 +54,9 @@ function weather_by_hours(now_date)
             text_by_center({x=xs[counter], y=ys[1]}, date.hour..':00', def.color, def.font, def.size)
             text_by_center({x=xs[counter], y=ys[3]}, temp..'°', temp_color(temp), def.font, def.size)
             display_image ({ img = min_img_path..response[i]['icon']..'.png', coord = { x = xs[counter]-35/2, y = ys[2] }} )
-            --local wind = format_wind(response[i].wind.direction.scale_8)
-            --text_by_center({x=xs[counter]-10, y=ys[3]-27}, wind, '0x000000', 'Arrows', 32)
-            --text_by_center({x=xs[counter]-10, y=ys[3]-25}, wind, def.color, 'Arrows', 27)
+            local wind = format_wind(response[i].wind.direction.scale_8)
+            text_by_center({x=xs[counter]-10, y=ys[3]-24}, wind, '0x000000', 'Arrows', 36)
+            text_by_center({x=xs[counter]-10, y=ys[3]-25}, wind, def.color, 'Arrows', 27)
             counter = counter+1
         end
         if counter > need_count then break end
@@ -79,9 +79,9 @@ function weather_by_days(now_date)
             text_by_center({x=xs[counter]-5, y=ys[3]}, temp_max..'°', temp_color(temp_max), def.font, def.size)
             text_by_center({x=xs[counter]+5, y=ys[4]}, temp_min..'°', temp_color(temp_min), def.font, def.size)
             display_image ( { img = min_img_path..response[i]['icon']..'.png', coord = { x = xs[counter]-35/2, y = ys[2] }} )
-            --local wind = format_wind(response[i].wind.direction.max.scale_8)
-            --text_by_center({x=xs[counter]-10, y=ys[3]-27}, wind, '0x000000', 'Arrows', 32)
-            --text_by_center({x=xs[counter]-10, y=ys[3]-25}, wind, def.color, 'Arrows', 27)
+            local wind = format_wind(response[i].wind.direction.max.scale_8)
+            text_by_center({x=xs[counter]-10, y=ys[3]-24}, wind,'0x000000', 'Arrows', 36)
+            text_by_center({x=xs[counter]-10, y=ys[3]-25}, wind,def.color, 'Arrows', 27)
             counter = counter+1
         end
         if counter > need_count then break end
