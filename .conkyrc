@@ -1,0 +1,117 @@
+conky.config = {
+--===Settings=================================================
+	use_xft = true,
+	font = 'Ubuntu:size=11',
+	xftalpha = 0.2,
+	text_buffer_size = 256,
+--############################################################
+	background = false, -- было true
+	own_window = true,
+    own_window_class = 'Conky',
+	own_window_type = 'normal', --desktop
+	own_window_transparent = true,
+	own_window_argb_visual = true,
+	own_window_argb_value = 0,
+	own_window_hints = 'undecorated,below,sticky,skip_taskbar,skip_pager',
+	double_buffer = true,
+	total_run_times = 0,
+	update_interval = 1,
+-- Minimum size of text area
+	minimum_height = 1024,
+	minimum_width = 310,
+	maximum_width = 310,
+	draw_shades = false,
+	draw_outline = false,
+	draw_borders = false,
+	draw_graph_borders = false,
+	stippled_borders = 0,
+	border_width = 3,
+--====================================================
+--Default colors and also border colors
+	default_color = '#00c5ff',--22ff00 Смена цвета Голубой / Зелёный
+	own_window_colour = '#000000',
+--====================================================
+--Text alignment, other possible values are commented
+	alignment = 'top_left',
+	gap_x = -1300,
+	gap_y = 40,
+	uppercase = false,
+	cpu_avg_samples = 2,
+	net_avg_samples = 2,
+	override_utf8_locale = true,
+	use_spacer = 'none',
+--===Text=================================================
+-- название для интеравтивности
+    own_window_title = 'interactive',
+
+	lua_load = "/home/artemiy/.conky/scripts/main.lua",
+	lua_draw_hook_pre = 'conky_main',
+}
+
+
+conky.text = [[
+#
+#---------------- ЧАСЫ ----------------
+$color0${offset -5}${font LED:size=52}${time %H:%M:%S}$font
+$alignr${voffset -50}${font LED:size=22}${time %d.%m.%Y}$font
+$alignr${voffset 7}${font Ubuntu:size=12}${time %A}$font
+#
+#
+#---------------- ЗАГРУЗКА СИСТЕМЫ ----------------
+#
+${voffset -15}
+#${color gray}${cpugraph cpu0 50,315}$color0
+#${color grey}CPU1  ${color ffb4bb}${cpubar cpu1 7, 278}$color0
+#${color grey}CPU2  ${color ffe0ba}${cpubar cpu2 7, 278}$color0
+#${color grey}CPU3  ${color fffebb}${cpubar cpu3 7, 278}$color0
+#${color grey}CPU4  ${color baffc9}${cpubar cpu4 7, 278}$color0
+#${color grey}CPU5  ${color bae1ff}${cpubar cpu5 7, 278}$color0
+#${color grey}CPU6  ${color aedfdb}${cpubar cpu6 7, 278}$color0
+#${color grey}CPU7  ${color 75c8cc}${cpubar cpu7 7, 278}$color0
+#${color grey}CPU8  ${color ead1f5}${cpubar cpu8 7, 278}$color0
+#
+${voffset 50}
+${color grey}CPU1  $color0
+${color grey}CPU2  $color0
+${color grey}CPU3  $color0
+${color grey}CPU4  $color0
+${color grey}CPU5  $color0
+${color grey}CPU6  $color0
+${color grey}CPU7  $color0
+${color grey}CPU8  $color0
+${voffset -8}
+# RAM #
+#${color grey}RAM ${color 3daee9}${membar 10, 225}$color0$alignr$mem$color0
+${color grey}RAM $alignr$mem$color0
+#
+# GPU #
+#${color gray}GPU ${color d76af9} ${lua_bar 10, 225 gpu}$color0 $alignr${exec nvidia-smi | grep % | cut -c 37-40} MB
+${color gray}GPU $alignr${exec nvidia-smi | grep % | cut -c 37-40} MB
+${voffset -8}
+#---------------- TOP CPU ----------------
+#${color gray}CPU   ${color 00aa00}$hr$color0
+${color gray}${goto 20}CPU$color0
+${color lightgrey}   ${top name 1} $alignr${top cpu 1}   $color0
+${color lightgrey}   ${top name 2} $alignr${top cpu 2}   $color0
+${color lightgrey}   ${top name 3} $alignr${top cpu 3}   $color0
+${color lightgrey}   ${top name 4} $alignr${top cpu 4}   $color0
+${color lightgrey}   ${top name 5} $alignr${top cpu 5}   $color0
+#
+
+#---------------- TOP MEM ----------------
+#${color gray}MEM   ${color 3daee9}$hr$color0
+${color gray}${goto 20}MEM$color0
+${color lightgrey}   ${top_mem name 1} $alignr${top_mem mem_res 1}   $color0
+${color lightgrey}   ${top_mem name 2} $alignr${top_mem mem_res 2}   $color0
+${color lightgrey}   ${top_mem name 3} $alignr${top_mem mem_res 3}   $color0
+${color lightgrey}   ${top_mem name 4} $alignr${top_mem mem_res 4}   $color0
+${color lightgrey}   ${top_mem name 5} $alignr${top_mem mem_res 5}   $color0
+#
+${voffset 7}
+#---------------- ИНТЕРНЕТ ----------------
+${color #baffc9}${font FontAwesome:size=15}$alignr${font ubuntu:size=12}${upspeed wlp5s0} / ${totalup wlp5s0}$color0
+${voffset -13}
+${color #ffb4bb}${font FontAwesome:size=15}$alignr${font ubuntu:size=12}${downspeed wlp5s0} / ${totaldown wlp5s0}$color0
+${voffset -25}
+]]
+
