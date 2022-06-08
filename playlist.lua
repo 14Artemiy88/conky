@@ -1,5 +1,9 @@
 function player()
-    if (mopidy_player() == false and vlc_player() == false and browser_player() == false) then
+    if (
+            mopidy_player() == false and
+            vlc_player() == false and
+            browser_player() == false
+        ) then
         text_by_left ({x=25, y=650}, 'Ничего не играет', '0x666666', def.font, 20, nil, nil)
     end
 end
@@ -83,31 +87,7 @@ function browser_player()
                 )
             )
     if string.len(browser_player) > 0 then
-        local artist,title,total_time,playing_time,el_time = browser_player:match('(.*)💩(.*)💩(.*)💩(.*)💩(.*)')
-        draw_dash_bar({
-            height = 7,
-            width = 310,
-            seg_width = 3,
-            seg_margin = 3,
-            start_x = 4,
-            y = 650,
-            value = tonumber(playing_time/total_time * 100),
-            colors = {
-                { alpha = 1 },
-                { color = def.color, alpha = .3 },
-            }
-        })
-        local start = 673
-        local step = 15
-        local title_parts = string_to_strings(title, 50)
-        for title_part in pairs(title_parts) do
-            text_by_left ({x=5, y=start}, trim(title_parts[title_part]), def.color, def.font, def.size, nil, nil)
-            start = start + step
-        end
-        text_by_left ({x=5, y=637}, artist, def.color, def.font, def.size, nil, nil)
-        text_by_right( {x=313, y=673}, el_time, def.color, def.font, def.size, nil, nil)
-
-        return true
+        return draw_player(browser_player:match('(.*)💩(.*)💩(.*)💩(.*)💩(.*)'))
     end
 
     return false
@@ -115,33 +95,37 @@ end
 
 function vlc_player()
     local vlc_player = trim(read_CLI("playerctl -p vlc metadata --format '{{ title }}💩{{ mpris:length }}💩{{ position }}💩-{{ duration(mpris:length - position) }}'"))
-        if string.len(vlc_player) > 0 then
-            local title,total_time,playing_time,el_time = vlc_player:match('(.*)💩(.*)💩(.*)💩(.*)')
-            draw_dash_bar({
-                height = 7,
-                width = 310,
-                seg_width = 3,
-                seg_margin = 3,
-                start_x = 4,
-                y = 650,
-                value = tonumber(playing_time/total_time * 100),
-                colors = {
-                    { alpha = 1 },
-                    { color = def.color, alpha = .3 },
-                }
-            })
-            local start = 673
-            local step = 15
-            local title_parts = string_to_strings(title, 50)
-            for title_part in pairs(title_parts) do
-                text_by_left ({x=5, y=start}, trim(title_parts[title_part]), def.color, def.font, def.size, nil, nil)
-                start = start + step
-            end
-            text_by_left ({x=5, y=637}, 'VLC', def.color, def.font, def.size, nil, nil)
-            text_by_right( {x=313, y=673}, el_time, def.color, def.font, def.size, nil, nil)
-
-        return true
+    if string.len(vlc_player) > 0 then
+        return draw_player('VLC', vlc_player:match('(.*)💩(.*)💩(.*)💩(.*)'))
     end
 
     return false
+end
+
+function draw_player(artist,title,total_time,playing_time,el_time)
+    draw_dash_bar({
+        height = 7,
+        width = 310,
+        seg_width = 3,
+        seg_margin = 3,
+        start_x = 4,
+        y = 650,
+        value = tonumber(playing_time/total_time * 100),
+        colors = {
+            { alpha = 1 },
+            { color = def.color, alpha = .3 },
+        }
+    })
+    local start = 673
+    local step = 15
+    local title_parts = string_to_strings(title, 50)
+    for title_part in pairs(title_parts) do
+        text_by_left ({x=5, y=start}, trim(title_parts[title_part]), def.color, def.font, def.size, nil, nil)
+        start = start + step
+    end
+
+    text_by_left ({x=5, y=637}, artist, def.color, def.font, def.size, nil, nil)
+    text_by_right( {x=313, y=673}, el_time, def.color, def.font, def.size, nil, nil)
+
+    return true
 end
