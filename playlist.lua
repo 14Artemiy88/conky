@@ -14,7 +14,7 @@ function mopidy_player()
 
         draw_dash_bar({
             height = 7,
-            width = 300,
+            width = 310,
             seg_width = 3,
             seg_margin = 3,
             start_x = 4,
@@ -88,7 +88,7 @@ function browser_player()
         local artist,title,total_time,playing_time,el_time = browser_player:match('(.*)💩(.*)💩(.*)💩(.*)💩(.*)')
         draw_dash_bar({
             height = 7,
-            width = 300,
+            width = 310,
             seg_width = 3,
             seg_margin = 3,
             start_x = 4,

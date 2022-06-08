@@ -1,7 +1,7 @@
 params = {
     {
         height = 10,
-        width = 260,
+        width = 275,
         seg_width = 3,
         seg_margin = 3,
         start_x = 45,
@@ -20,7 +20,7 @@ params = {
     },
     {
         height = 10,
-        width = 260,
+        width = 275,
         seg_width = 3,
         seg_margin = 3,
         start_x = 45,
@@ -39,7 +39,7 @@ params = {
     },
     {
         height = 10,
-        width = 260,
+        width = 275,
         seg_width = 3,
         seg_margin = 3,
         start_x = 45,
@@ -58,7 +58,7 @@ params = {
     },
     {
         height = 10,
-        width = 260,
+        width = 275,
         seg_width = 3,
         seg_margin = 3,
         start_x = 45,
@@ -77,7 +77,7 @@ params = {
     },
     {
         height = 10,
-        width = 260,
+        width = 275,
         seg_width = 3,
         seg_margin = 3,
         start_x = 45,
@@ -96,7 +96,7 @@ params = {
     },
     {
         height = 10,
-        width = 260,
+        width = 275,
         seg_width = 3,
         seg_margin = 3,
         start_x = 45,
@@ -115,7 +115,7 @@ params = {
     },
     {
         height = 10,
-        width = 260,
+        width = 275,
         seg_width = 3,
         seg_margin = 3,
         start_x = 45,
@@ -134,7 +134,7 @@ params = {
     },
     {
         height = 10,
-        width = 260,
+        width = 275,
         seg_width = 3,
         seg_margin = 3,
         start_x = 45,
@@ -155,7 +155,7 @@ params = {
     --- mem_bar ---
     {
         height = 10,
-        width = 210,
+        width = 220,
         seg_width = 3,
         seg_margin = 3,
         start_x = 40,
@@ -175,7 +175,7 @@ params = {
     --- gpu_bar ---
     {
         height = 10,
-        width = 210,
+        width = 220,
         seg_width = 3,
         seg_margin = 3,
         start_x = 40,
