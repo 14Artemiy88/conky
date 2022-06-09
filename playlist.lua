@@ -81,25 +81,42 @@ function mopidy_player()
 end
 
 function browser_player()
-    local command = "playerctl -p plasma-browser-integration metadata --format '{{ artist }}💩{{ title }}💩{{ mpris:length }}💩{{ position }}💩-{{ duration(mpris:length - position) }}'"
-    local browser_player = trim(read_CLI(command))
-    if string.len(browser_player) > 0 then
-        return draw_player(browser_player:match('(.*)💩(.*)💩(.*)💩(.*)💩(.*)'))
+    local params = {
+        'artist',
+        'title',
+        'mpris:length',
+        'position',
+        'duration(mpris:length - position)',
+        'kde:mediaSrc',
+        'mpris:artUrl',
+    }
+    local command = "playerctl -p plasma-browser-integration metadata -f '{{ %s }}'"
+    local player = trim(read_CLI(string.format(command, table.concat(params,' }}💩{{ '))))
+    if string.len(player) > 0 then
+        return draw_player(player:match('(.*)💩(.*)💩(.*)💩(.*)💩(.*)💩(.*)💩(.*)'))
     end
 
     return false
 end
 
 function vlc_player()
-    local vlc_player = trim(read_CLI("playerctl -p vlc metadata --format '{{ title }}💩{{ mpris:length }}💩{{ position }}💩-{{ duration(mpris:length - position) }}'"))
-    if string.len(vlc_player) > 0 then
-        return draw_player('VLC', vlc_player:match('(.*)💩(.*)💩(.*)💩(.*)'))
+    local params = {
+        'title',
+        'mpris:length',
+        'position',
+        'duration(mpris:length - position)',
+    }
+    local command = "playerctl -p vlc metadata -f '{{ %s }}'"
+    --print(command)
+    local player = trim(read_CLI(string.format(command, table.concat(params,' }}💩{{ '))))
+    if string.len(player) > 0 then
+        return draw_player('VLC', player:match('(.*)💩(.*)💩(.*)💩(.*)'))
     end
 
     return false
 end
 
-function draw_player(artist,title,total_time,playing_time,el_time)
+function draw_player(artist, title, total_time, playing_time, el_time, mediaSrc, img)
     draw_dash_bar({
         height = 7,
         width = 310,
@@ -115,14 +132,31 @@ function draw_player(artist,title,total_time,playing_time,el_time)
     })
     local start = 673
     local step = 15
-    local title_parts = string_to_strings(title, 50)
+    local title_parts = string_to_strings(title, 30)
     for title_part in pairs(title_parts) do
-        text_by_left ({x=5, y=start}, trim(title_parts[title_part]), def.color, def.font, def.size, nil, nil)
+        text_by_left ({x=55, y=start}, trim(title_parts[title_part]), def.color, def.font, def.size, nil, nil)
         start = start + step
     end
 
     text_by_left ({x=5, y=637}, artist, def.color, def.font, def.size, nil, nil)
-    text_by_right( {x=313, y=673}, el_time, def.color, def.font, def.size, nil, nil)
+    text_by_right( {x=313, y=673}, '-'..el_time, def.color, def.font, def.size, nil, nil)
+    if mediaSrc ~= nil then
+        get_img(mediaSrc, img)
+    else
+        display_image ({ coord = { x = 3, y = 665 }, img = scripts .. 'img/VLC.png'} )
+    end
 
     return true
+end
+
+function get_img(mediaSrc, img)
+    local _, img_id = mediaSrc:match('(.*)-(.*)')
+    local path = '/tmp/' .. trim(img_id) .. '.png'
+    if file_exists(path) == false then
+        local img_tml_command = 'ffmpeg -loglevel 0 -y -i %s -pix_fmt rgba -vf "scale=45:-1" "%s"'
+        img = img:gsub( "=", [[\%1]]):gsub( "?", [[\%1]]):gsub( "&", [[\%1]])
+        img_tml_command = string.format(img_tml_command,img,path)
+        os.execute(img_tml_command)
+    end
+    display_image ({ coord = { x = 3, y = 665 }, img = path} )
 end

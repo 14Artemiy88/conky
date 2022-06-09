@@ -9,6 +9,9 @@ local weather_data = { '','','' }
 local need_count = 4
 local xs = { 20, 112, 203, 282 } -- положение каждого элемента по горизонтали
 
+--------------
+--- Погода ---
+--------------
 function weather()
     local date = os.date ("*t")
     weather_now()
@@ -16,6 +19,9 @@ function weather()
     weather_by_days(date)
 end
 
+---------------------
+--- Запрос на API ---
+---------------------
 function get_weather(key, type, params)
     local url = "curl -H 'X-Gismeteo-Token: "..token.."' 'https://api.gismeteo.net/v2/weather/"..type.."/4517/"..params.."'"
     local f = io.popen(url)
@@ -23,6 +29,9 @@ function get_weather(key, type, params)
     f:close()
 end
 
+-------------------------
+--- Актуальная погода ---
+-------------------------
 function weather_now()
     if weather_data[1] == '' or os.date("%M:%S") == '00:01' then
         get_weather(1, 'current', '')
@@ -41,6 +50,9 @@ function weather_now()
     display_image( { img = img_path..response.icon..'.png', coord = { x = 130, y = 730 } } )
 end
 
+----------------------------
+--- Погода каждые 3 часа ---
+----------------------------
 function weather_by_hours(now_date)
     if weather_data[2] == '' or os.date("%M:%S") == '00:06' then
         get_weather(2,'forecast', '?days=2')
@@ -62,6 +74,9 @@ function weather_by_hours(now_date)
     end
 end
 
+-------------------------------
+--- Погода на следующие дни ---
+-------------------------------
 function weather_by_days(now_date)
     if weather_data[3] == '' or os.date("%M:%S") == '00:11' then
         get_weather(3,'forecast/aggregate', '?days=5')
@@ -85,12 +100,18 @@ function weather_by_days(now_date)
     end
 end
 
+------------------------------------
+--- Направление ветра стрелочкой ---
+------------------------------------
 function display_wind(wind, coord)
     local arrow = format_wind(wind)
     text_by_center({x=coord.x-10, y=coord.y-24}, arrow,'0x000000', 'Arrows', 36)
     text_by_center({x=coord.x-10, y=coord.y-25}, arrow,def.color, 'Arrows', 27)
 end
 
+------------------------------------------------------------
+--- Конвертация направления ветра в символ для стрелочки ---
+------------------------------------------------------------
 function format_wind(wind)
     local arrows = {
         '',  -- Штиль
@@ -107,6 +128,9 @@ function format_wind(wind)
     return arrows[wind+1]
 end
 
+---------------------------------------
+--- Градация цветов для температуры ---
+---------------------------------------
 function temp_color(temp)
     if temp > 30  then return "0xcc0000" end
     if temp > 20  then return "0xffb4bb" end

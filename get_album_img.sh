@@ -2,7 +2,7 @@
 
 COVER="/tmp/album_cover.png"
 COVER_SIZE="40"
-DEFAULT_COVER="/home/artemiy/.conky/scripts/nocover.jpg"
+DEFAULT_COVER="/home/artemiy/.conky/scripts/img/nocover.jpg"
 
 file="$(mpc --format %file% current | python3 -c 'import sys; from urllib.parse import unquote; print(unquote(sys.stdin.read()));')"
 album="${file%/*}"
