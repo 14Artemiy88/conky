@@ -24,8 +24,8 @@ function conky_main()
         draw_dash_bar(params[k])
     end
 
-    player()
     weather()
+    player()
 
     text_by_left({x=3, y=1020}, 'alt+SysRq+R / ctrl+alt+F2', '0xcccccc', 'Ubuntu', 10)
 

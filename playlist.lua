@@ -92,11 +92,11 @@ function playerctl_player()
             player = 'plasma-browser-integration',
             icon = scripts .. 'img/nocover.png',
             params = {
-                'artist',
                 'title',
                 'mpris:length',
                 'position',
                 'duration(mpris:length - position)',
+                'artist',
                 'kde:mediaSrc',
                 'mpris:artUrl',
             }
@@ -109,40 +109,40 @@ function playerctl_player()
         if string.len(player) > 0 then
             local pattern = '💩(.*)'
 
-            return draw_player(players[key].icon, player:match('(.*)' .. pattern:rep(#players[key].params-1)))
+            return draw_player( players[key].icon, player:match('(.*)' .. pattern:rep(#players[key].params-1)) )
         end
     end
 
     return false
 end
 
-function draw_player(icon, artist, title, total_time, playing_time, el_time, mediaSrc, img)
+function draw_player(icon, title, total_time, playing_time, el_time, artist, mediaSrc, img)
     draw_dash_bar({
         height = 7,
         width = 310,
         seg_width = 3,
         seg_margin = 3,
         start_x = 4,
-        y = 650,
+        y = 640,
         value = tonumber(playing_time/total_time * 100),
         colors = {
             { alpha = 1 },
             { color = def.color, alpha = .3 },
         }
     })
-    local start = 673
+    local start = 663
     local step = 15
     local title_parts = string_to_strings(title, 31)
     for title_part in pairs(title_parts) do
         text_by_left ({x=55, y=start}, trim(title_parts[title_part]), def.color, def.font, def.size, nil, nil)
         start = start + step
     end
-    text_by_left ({x=5, y=637}, artist, def.color, def.font, def.size, nil, nil)
-    text_by_right( {x=313, y=673}, '-'..el_time, def.color, def.font, def.size, nil, nil)
-    if string.len(img) > 0 then
+    text_by_left ({x=5, y=627}, artist, def.color, def.font, def.size, nil, nil)
+    text_by_right( {x=313, y=663}, '-'..el_time, def.color, def.font, def.size, nil, nil)
+    if img ~= nil and string.len(img) > 0 then
         get_img(mediaSrc, img)
     else
-        display_image ({ coord = { x = 3, y = 664 }, img = icon} )
+        display_image ({ coord = { x = 3, y = 652 }, img = icon} )
     end
 
     return true
@@ -157,5 +157,5 @@ function get_img(mediaSrc, img)
         img_tml_command = string.format(img_tml_command,img,path)
         os.execute(img_tml_command)
     end
-    display_image ({ coord = { x = 3, y = 664 }, img = path} )
+    display_image ({ coord = { x = 3, y = 652 }, img = path} )
 end
