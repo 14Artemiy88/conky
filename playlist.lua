@@ -142,7 +142,7 @@ function draw_player(icon, title, total_time, playing_time, el_time, artist, med
     if img ~= nil and string.len(img) > 0 then
         get_img(mediaSrc, img)
     else
-        display_image ({ coord = { x = 3, y = 652 }, img = icon} )
+        display_image ({ coord = { x = 7, y = 652 }, img = icon} )
     end
 
     return true
@@ -157,5 +157,5 @@ function get_img(mediaSrc, img)
         img_tml_command = string.format(img_tml_command,img,path)
         os.execute(img_tml_command)
     end
-    display_image ({ coord = { x = 3, y = 652 }, img = path} )
+    display_image ({ coord = { x = 3, y = 654 }, img = path} )
 end
