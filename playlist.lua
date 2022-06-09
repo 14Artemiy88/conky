@@ -1,9 +1,5 @@
 function player()
-    if (
-            mopidy_player() == false and
-            vlc_player() == false and
-            browser_player() == false
-        ) then
+    if (mopidy_player() == false and playerctl_player() == false) then
         text_by_left ({x=25, y=650}, 'Ничего не играет', '0x666666', def.font, 20, nil, nil)
     end
 end
@@ -80,43 +76,47 @@ function mopidy_player()
     return false
 end
 
-function browser_player()
-    local params = {
-        'artist',
-        'title',
-        'mpris:length',
-        'position',
-        'duration(mpris:length - position)',
-        'kde:mediaSrc',
-        'mpris:artUrl',
+function playerctl_player()
+    local players = {
+        {
+            player = 'vlc',
+            icon = scripts .. 'img/VLC.png',
+            params = {
+                'title',
+                'mpris:length',
+                'position',
+                'duration(mpris:length - position)',
+            },
+        },
+        {
+            player = 'plasma-browser-integration',
+            icon = scripts .. 'img/nocover.png',
+            params = {
+                'artist',
+                'title',
+                'mpris:length',
+                'position',
+                'duration(mpris:length - position)',
+                'kde:mediaSrc',
+                'mpris:artUrl',
+            }
+        },
     }
-    local command = "playerctl -p plasma-browser-integration metadata -f '{{ %s }}'"
-    local player = trim(read_CLI(string.format(command, table.concat(params,' }}💩{{ '))))
-    if string.len(player) > 0 then
-        return draw_player(player:match('(.*)💩(.*)💩(.*)💩(.*)💩(.*)💩(.*)💩(.*)'))
+
+    for key in pairs(players) do
+        local command = "playerctl -p "..players[key].player.." metadata -f '{{ %s }}'"
+        local player = trim(read_CLI(string.format(command, table.concat(players[key].params,' }}💩{{ '))))
+        if string.len(player) > 0 then
+            local pattern = '💩(.*)'
+
+            return draw_player(players[key].icon, player:match('(.*)' .. pattern:rep(#players[key].params-1)))
+        end
     end
 
     return false
 end
 
-function vlc_player()
-    local params = {
-        'title',
-        'mpris:length',
-        'position',
-        'duration(mpris:length - position)',
-    }
-    local command = "playerctl -p vlc metadata -f '{{ %s }}'"
-    --print(command)
-    local player = trim(read_CLI(string.format(command, table.concat(params,' }}💩{{ '))))
-    if string.len(player) > 0 then
-        return draw_player('VLC', player:match('(.*)💩(.*)💩(.*)💩(.*)'))
-    end
-
-    return false
-end
-
-function draw_player(artist, title, total_time, playing_time, el_time, mediaSrc, img)
+function draw_player(icon, artist, title, total_time, playing_time, el_time, mediaSrc, img)
     draw_dash_bar({
         height = 7,
         width = 310,
@@ -132,18 +132,17 @@ function draw_player(artist, title, total_time, playing_time, el_time, mediaSrc,
     })
     local start = 673
     local step = 15
-    local title_parts = string_to_strings(title, 30)
+    local title_parts = string_to_strings(title, 31)
     for title_part in pairs(title_parts) do
         text_by_left ({x=55, y=start}, trim(title_parts[title_part]), def.color, def.font, def.size, nil, nil)
         start = start + step
     end
-
     text_by_left ({x=5, y=637}, artist, def.color, def.font, def.size, nil, nil)
     text_by_right( {x=313, y=673}, '-'..el_time, def.color, def.font, def.size, nil, nil)
-    if mediaSrc ~= nil then
+    if string.len(img) > 0 then
         get_img(mediaSrc, img)
     else
-        display_image ({ coord = { x = 3, y = 665 }, img = scripts .. 'img/VLC.png'} )
+        display_image ({ coord = { x = 3, y = 664 }, img = icon} )
     end
 
     return true
@@ -158,5 +157,5 @@ function get_img(mediaSrc, img)
         img_tml_command = string.format(img_tml_command,img,path)
         os.execute(img_tml_command)
     end
-    display_image ({ coord = { x = 3, y = 665 }, img = path} )
+    display_image ({ coord = { x = 3, y = 664 }, img = path} )
 end
