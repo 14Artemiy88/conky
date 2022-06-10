@@ -10,8 +10,9 @@ function mopidy_player()
         local current,artist,album,date = current_t_a_al_d:match('(.*)/(.*)/(.*)/(%d*)')
         local tt_ct_p_tc_pt = read_CLI('mpc status %totaltime%/%currenttime%/%songpos%/%length%/%percenttime%')
         local tt_m,tt_s,ct_m,ct_s,current_num,total_count,_,pt = tt_ct_p_tc_pt:match('(%d+):(%d+)/(%d+):(%d+)/(%d+)/(%d+)/(%s+)(%d+)')
-        local u_el_time  = (tt_m * 60 + tt_s) - (ct_m * 60 + ct_s)
-        local el_time    = os.date("%M:%S", u_el_time)
+        if tt_m == nil then tt_m, tt_s, ct_m, ct_s, total_count = 0, 0, 0, 0, 0 end
+        local u_el_time = (tt_m * 60 + tt_s) - (ct_m * 60 + ct_s)
+        local el_time   = os.date("%M:%S", u_el_time)
         local count = 5
         current_num = tonumber(current_num)
         local start = tonumber(total_count - count + 1)
@@ -68,7 +69,7 @@ function mopidy_player()
         text_by_right ({x=313, y=600}, album..date, def.color, def.font, def.size)
         display_image ({ coord = { x = 5, y = 625 }, img = '/tmp/album_cover.png'} )
         text_by_center( {x=23, y=685}, current_num..'/'..total_count, def.color, def.font, def.size )
-        text_by_center( {x=23, y=702}, string.gsub(total_time, "-0", "-"), def.color, def.font, def.size )
+        text_by_center( {x=23, y=701}, string.gsub(total_time, "-0", "-"), def.color, def.font, def.size )
 
         return true
     end
