@@ -116,12 +116,12 @@ end
 -----------------------------------
 function string_to_strings(str,  length)
     local str_strings = {}
-    if string.len(str) > length then
+    if utf8.len(str) > length then
         local new_string = ''
         local str_arr = split(str, " ")
         for i in pairs(str_arr) do
             new_string = new_string .. ' ' .. str_arr[i]
-            if string.len(new_string) >= length or i == #str_arr then
+            if utf8.len(new_string) >= length or i == #str_arr then
                 table.insert(str_strings, new_string)
                 new_string = ""
             end
