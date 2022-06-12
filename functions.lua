@@ -17,7 +17,6 @@ function text_by_left(coord, text, color, font, size, slant, weight)
     cairo_set_font_size (cr, size)
 	cairo_select_font_face (cr, font, slant, weight)
     cairo_set_source_rgba (cr, rgb_to_r_g_b(color, 1))
-	cairo_text_extents(cr, text, extents)
 	cairo_move_to (cr, coord.x, coord.y)
 	cairo_show_text (cr, text)
 end
@@ -117,13 +116,19 @@ end
 function string_to_strings(str,  length)
     local str_strings = {}
     if utf8.len(str) > length then
-        local new_string = ''
+        local string_part = ''
         local str_arr = split(str, " ")
         for i in pairs(str_arr) do
-            new_string = new_string .. ' ' .. str_arr[i]
-            if utf8.len(new_string) >= length or i == #str_arr then
-                table.insert(str_strings, new_string)
-                new_string = ""
+            local candidate = string_part .. ' ' .. str_arr[i]
+            if i == #str_arr then
+                table.insert(str_strings, candidate)
+                break
+            end
+            if utf8.len(candidate) >= length then
+                table.insert(str_strings, string_part)
+                string_part = str_arr[i]
+            else
+                string_part = candidate
             end
         end
     else

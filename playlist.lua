@@ -133,7 +133,7 @@ function draw_player(icon, title, total_time, playing_time, el_time, artist, med
     })
     local start = 663
     local step = 15
-    local title_parts = string_to_strings(title, 31)
+    local title_parts = string_to_strings(title, 33)
     for title_part in pairs(title_parts) do
         text_by_left ({x=55, y=start}, trim(title_parts[title_part]), def.color, def.font, def.size, nil, nil)
         start = start + step
