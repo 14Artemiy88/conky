@@ -105,7 +105,7 @@ end
 ------------------------------------
 function display_wind(wind, coord)
     local arrow = format_wind(wind)
-    text_by_center({x=coord.x-10, y=coord.y-24}, arrow,'0x000000', 'Arrows', 36)
+    text_by_center({x=coord.x-10, y=coord.y-25}, arrow,'0x000000', 'Arrows', 36)
     text_by_center({x=coord.x-10, y=coord.y-25}, arrow,def.color, 'Arrows', 27)
 end
 

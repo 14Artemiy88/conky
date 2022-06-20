@@ -3,7 +3,8 @@ def = {
     size = 12,
     font = 'Ubuntu Nerd Font',
     size_mono = 10,
-    font_mono ='FiraCode Nerd Font Mono',
+    font_mono ='RobotoMono Nerd Font',
+    font_emoji ='Noto Color Emoji',
     color = '0xcccccc'
 }
 slant_normal  = CAIRO_FONT_SLANT_NORMAL
@@ -136,6 +137,19 @@ function string_to_strings(str,  length)
     end
 
     return str_strings
+end
+
+-----------------------
+--- Обрезать строку ---
+-----------------------
+function cut_string(str, length, postfix)
+    local str_arr =  string_to_strings(str,  length)
+    if str_arr[2] ~= nil then
+        if postfix == nil then postfix = "" end
+        str = str_arr[1] .. postfix
+    end
+
+    return str
 end
 
 ---------------------------------------

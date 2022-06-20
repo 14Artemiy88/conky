@@ -5,11 +5,11 @@ function player()
 end
 
 function mopidy_player()
-    local current_t_a_al_d = trim(read_CLI('mpc current -f %title%/%artist%/%album%/%date%'))
+    local current_t_a_al_d = trim(read_CLI('mpc current -f %title%💩%artist%💩%album%💩%date%'))
     if string.len(current_t_a_al_d) > 0 then
-        local current,artist,album,date = current_t_a_al_d:match('(.*)/(.*)/(.*)/(%d*)')
-        local tt_ct_p_tc_pt = read_CLI('mpc status %totaltime%/%currenttime%/%songpos%/%length%/%percenttime%')
-        local tt_m,tt_s,ct_m,ct_s,current_num,total_count,_,pt = tt_ct_p_tc_pt:match('(%d+):(%d+)/(%d+):(%d+)/(%d+)/(%d+)/(%s+)(%d+)')
+        local current,artist,album,date = current_t_a_al_d:match('(.*)💩(.*)💩(.*)💩(%d*)')
+        local tt_ct_p_tc_pt = read_CLI('mpc status %totaltime%💩%currenttime%💩%songpos%💩%length%💩%percenttime%')
+        local tt_m,tt_s,ct_m,ct_s,current_num,total_count,_,pt = tt_ct_p_tc_pt:match('(%d+):(%d+)💩(%d+):(%d+)💩(%d+)💩(%d+)💩(%s+)(%d+)')
         if tt_m == nil then tt_m, tt_s, ct_m, ct_s, total_count = 0, 0, 0, 0, 0 end
         local u_el_time = (tt_m * 60 + tt_s) - (ct_m * 60 + ct_s)
         local el_time   = os.date("%M:%S", u_el_time)
@@ -22,9 +22,9 @@ function mopidy_player()
         local stop = start + count
         local el_total_time = 0
         local y_start = 635
-        local playlist = split(read_CLI('mpc playlist -f %title%/%time%'), '\n')
+        local playlist = split(read_CLI('mpc playlist -f %title%💩%time%'), '\n')
         for N in pairs(playlist) do
-            local song, time_m, time_s = playlist[N]:match('(.*)/(%d+):(%d+)')
+            local song, time_m, time_s = playlist[N]:match('(.*)💩(%d+):(%d+)')
             if N > current_num then
                 el_total_time = el_total_time + time_m * 60 + time_s
             end
@@ -37,9 +37,8 @@ function mopidy_player()
                     color = '0x3daee9'
                     song_time = string.gsub('-'..el_time, "-0", "-")
                 end
-                song = string_to_strings(song, 33)
-                if song[2] ~= nil then song[1] = song[1] .. '…' end
-                text_by_left ({x=53, y=y_start}, trim(song[1]), color, def.font, def.size)
+                song = cut_string(song, 33, '…')
+                text_by_left ({x=53, y=y_start}, trim(song), color, def.font, def.size)
                 text_by_right({x=313, y=y_start}, song_time, color, def.font, def.size)
                 y_start = y_start + y_step
             end
@@ -65,6 +64,7 @@ function mopidy_player()
                 { color = def.color, alpha = .3 },
             }
         })
+        album = cut_string(album, 28, '…')
         text_by_left  ({x=5, y=600}, artist, def.color, def.font, def.size, nil, weight_bold)
         text_by_right ({x=313, y=600}, album..date, def.color, def.font, def.size)
         display_image ({ coord = { x = 5, y = 625 }, img = '/tmp/album_cover.png'} )
@@ -133,13 +133,13 @@ function draw_player(icon, title, total_time, playing_time, el_time, artist, med
     })
     local start = 663
     local step = 15
-    local title_parts = string_to_strings(title, 33)
+    local title_parts = string_to_strings(title, 26)
     for title_part in pairs(title_parts) do
-        text_by_left ({x=55, y=start}, trim(title_parts[title_part]), def.color, def.font, def.size, nil, nil)
+        text_by_left ({x=55, y=start}, trim(title_parts[title_part]), def.color, def.font_mono, 13, nil, nil)
         start = start + step
     end
-    text_by_left ({x=5, y=627}, artist, def.color, def.font, def.size, nil, nil)
-    text_by_right( {x=313, y=663}, '-'..el_time, def.color, def.font, def.size, nil, nil)
+    text_by_left ({x=5, y=627}, artist, def.color, def.font, 13, nil, nil)
+    text_by_right( {x=313, y=663}, '-'..el_time, def.color, def.font_mono, def.size, nil, nil)
     if img ~= nil and string.len(img) > 0 then
         get_img(mediaSrc, img)
     else
