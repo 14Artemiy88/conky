@@ -2,9 +2,7 @@ local extents = cairo_text_extents_t:create()
 def = {
     size = 12,
     font = 'Ubuntu Nerd Font',
-    size_mono = 10,
-    font_mono ='RobotoMono Nerd Font',
-    font_emoji ='Noto Color Emoji',
+    font_emoji ='Noto Emoji',
     color = '0xcccccc'
 }
 slant_normal  = CAIRO_FONT_SLANT_NORMAL
@@ -14,36 +12,22 @@ weight_bold   = CAIRO_FONT_WEIGHT_BOLD
 ---------------------------
 --- Вывод текста слева ---
 ---------------------------
-function text_by_left(coord, text, color, font, size, slant, weight)
-    cairo_set_font_size (cr, size)
-	cairo_select_font_face (cr, font, slant, weight)
-    cairo_set_source_rgba (cr, rgb_to_r_g_b(color, 1))
-	cairo_move_to (cr, coord.x, coord.y)
-	cairo_show_text (cr, text)
+function text_by_left(coord, text, font_params, string_param)
+    draw_text({x=coord.x, y=coord.y }, text, font_params, string_param)
 end
 
 ---------------------------
 --- Вывод текста справа ---
 ---------------------------
-function text_by_right(coord, text, color, font, size, slant, weight)
-    cairo_set_font_size (cr, size)
-	cairo_select_font_face (cr, font, slant, weight)
-    cairo_set_source_rgba (cr, rgb_to_r_g_b(color, 1))
-	cairo_text_extents(cr, text, extents)
-	cairo_move_to (cr, coord.x-(extents.width + extents.x_bearing),coord.y)
-	cairo_show_text (cr, text)
+function text_by_right(coord, text, font_params, string_param)
+    draw_text({ position='right', x=coord.x, y=coord.y}, text, font_params, string_param)
 end
 
 ------------------------------
 --- Вывод текста по центру ---
 ------------------------------
-function text_by_center(coord, text, color, font, size, slant, weight)
-    cairo_set_font_size (cr, size)
-	cairo_select_font_face (cr, font, slant, weight)
-    cairo_set_source_rgba (cr, rgb_to_r_g_b(color, 1))
-    cairo_text_extents(cr, text, extents)
-    cairo_move_to (cr, coord.x - (extents.width/2 + extents.x_bearing), coord.y - (extents.height/2 + extents.y_bearing))
-    cairo_show_text (cr, text)
+function text_by_center(coord, text, font_params)
+    draw_text({ position='center', x=coord.x, y=coord.y }, text, font_params, string_param)
 end
 
 ------------------------
@@ -75,8 +59,12 @@ end
 -----------------------------
 --- Перекодирвоание цвета ---
 -----------------------------
-function rgb_to_r_g_b(color, alpha)
-    return ((color / 0x10000) % 0x100) / 255., ((color / 0x100) % 0x100) / 255., (color % 0x100) / 255., alpha
+function get_color(color, alpha)
+	if type(color) == 'string' then
+		return ((color / 0x10000) % 0x100) / 255., ((color / 0x100) % 0x100) / 255., (color % 0x100) / 255., alpha
+	end
+
+    return gradient(color, alpha)
 end
 
 ------------------------------------
@@ -121,15 +109,15 @@ function string_to_strings(str,  length)
         local str_arr = split(str, " ")
         for i in pairs(str_arr) do
             local candidate = string_part .. ' ' .. str_arr[i]
-            if i == #str_arr then
-                table.insert(str_strings, candidate)
-                break
-            end
             if utf8.len(candidate) >= length then
                 table.insert(str_strings, string_part)
                 string_part = str_arr[i]
             else
                 string_part = candidate
+            end
+            if i == #str_arr then
+                table.insert(str_strings, string_part)
+                break
             end
         end
     else
@@ -143,7 +131,7 @@ end
 --- Обрезать строку ---
 -----------------------
 function cut_string(str, length, postfix)
-    local str_arr =  string_to_strings(str,  length)
+    local str_arr = string_to_strings(str, length)
     if str_arr[2] ~= nil then
         if postfix == nil then postfix = "" end
         str = str_arr[1] .. postfix
@@ -188,4 +176,74 @@ end
 function file_exists(name)
    local f = io.open(name,"r")
    if f ~= nil then io.close(f) return true else return false end
+end
+
+
+------------------------
+--- Отрисовка текста ---
+------------------------
+function draw_text(coord, text, font_params, string_param)
+    font_params = set_def_font_params(font_params)
+    cairo_set_font_size (cr, font_params.size)
+	cairo_select_font_face (cr, font_params.font, nil, font_params.weight)
+    cairo_set_source_rgba (cr, get_color(font_params.color, 1))
+    cairo_text_extents(cr, text, extents)
+    local x,y = coord.x, coord.y
+    if (coord.position == 'right') then
+        x,y = coord.x-(extents.width + extents.x_bearing),coord.y
+    end
+    if (coord.position == 'center') then
+        x,y = coord.x - (extents.width/2 + extents.x_bearing), coord.y - (extents.height/2 + extents.y_bearing)
+    end
+    if string_param ~= nil then
+        if extents.width > string_param.width then
+            local text_strings = {}
+            local string_part = ''
+            local str_arr = split(text, " ")
+            for i in pairs(str_arr) do
+                local candidate = trim(string_part .. ' ' .. str_arr[i])
+                cairo_text_extents(cr, candidate, extents)
+                if extents.width > string_param.width then
+                    table.insert(text_strings, string_part)
+                    string_part = str_arr[i]
+                else
+                    string_part = candidate
+                end
+                if i == #str_arr then
+                    table.insert(text_strings, string_part)
+                    break
+                end
+            end
+            if string_param.col == 1 then
+                cairo_move_to (cr, x,y)
+                cairo_show_text (cr, text_strings[1] .. '…')
+            else
+                if string_param.col == nil then string_param.col = #text_strings end
+                local y_start = y
+                for str = 1, string_param.col do
+                    cairo_move_to (cr, x, y_start)
+                    cairo_show_text (cr, text_strings[str])
+                    y_start = y_start + string_param.margin
+                end
+            end
+        else
+            cairo_move_to (cr, x,y)
+            cairo_show_text (cr, text)
+        end
+    else
+        cairo_move_to (cr, x,y)
+        cairo_show_text (cr, text)
+    end
+end
+
+-------------------------------------
+--- Параметры текста по умолчанию ---
+-------------------------------------
+function set_def_font_params(font_params)
+    if font_params == nil       then font_params = {} end
+    if font_params.size  == nil then font_params.size = def.size   end
+    if font_params.font  == nil then font_params.font = def.font   end
+    if font_params.color == nil then font_params.color = def.color end
+
+    return font_params
 end

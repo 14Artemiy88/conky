@@ -1,6 +1,6 @@
 function player()
     if (mopidy_player() == false and playerctl_player() == false) then
-        text_by_left ({x=25, y=650}, 'Ничего не играет', '0x666666', def.font, 20, nil, nil)
+        text_by_left ({x=25, y=650}, 'Ничего не играет', {color='0x666666', size=20})
     end
 end
 
@@ -37,9 +37,9 @@ function mopidy_player()
                     color = '0x3daee9'
                     song_time = string.gsub('-'..el_time, "-0", "-")
                 end
-                song = cut_string(song, 33, '…')
-                text_by_left ({x=53, y=y_start}, trim(song), color, def.font, def.size)
-                text_by_right({x=313, y=y_start}, song_time, color, def.font, def.size)
+                song = string.gsub(song, '.wav', '')
+                text_by_left ({x=53, y=y_start}, trim(song), {color=color}, { width=250, col=1 })
+                text_by_right({x=313, y=y_start}, song_time, {color=color})
                 y_start = y_start + y_step
             end
         end
@@ -60,16 +60,16 @@ function mopidy_player()
             y = 612,
             value = tonumber(pt),
             colors = {
-                { color = '0xcc0000', alpha = 1 },
+                { color = '0x3daee9', alpha = 1 },
                 { color = def.color, alpha = .3 },
             }
         })
         album = cut_string(album, 28, '…')
-        text_by_left  ({x=5, y=600}, artist, def.color, def.font, def.size, nil, weight_bold)
-        text_by_right ({x=313, y=600}, album..date, def.color, def.font, def.size)
+        text_by_left  ({x=5, y=600}, artist, { weight = weight_bold })
+        text_by_right ({x=313, y=600}, album..date)
         display_image ({ coord = { x = 5, y = 625 }, img = '/tmp/album_cover.png'} )
-        text_by_center( {x=23, y=685}, current_num..'/'..total_count, def.color, def.font, def.size )
-        text_by_center( {x=23, y=701}, string.gsub(total_time, "-0", "-"), def.color, def.font, def.size )
+        text_by_center( {x=23, y=685}, current_num..'/'..total_count )
+        text_by_center( {x=23, y=701}, string.gsub(total_time, "-0", "-") )
 
         return true
     end
@@ -127,19 +127,13 @@ function draw_player(icon, title, total_time, playing_time, el_time, artist, med
         y = 640,
         value = tonumber(playing_time/total_time * 100),
         colors = {
-            { alpha = 1 },
+            { color = update_num, alpha = 1 },
             { color = def.color, alpha = .3 },
         }
     })
-    local start = 663
-    local step = 15
-    local title_parts = string_to_strings(title, 26)
-    for title_part in pairs(title_parts) do
-        text_by_left ({x=55, y=start}, trim(title_parts[title_part]), def.color, def.font_mono, 13, nil, nil)
-        start = start + step
-    end
-    text_by_left ({x=5, y=627}, artist, def.color, def.font, 13, nil, nil)
-    text_by_right( {x=313, y=663}, '-'..el_time, def.color, def.font_mono, def.size, nil, nil)
+    text_by_left ({x=55, y=663}, title, { size=13 },{width = 230, margin=15})
+    text_by_left ({x=5, y=627}, artist, { size=13 })
+    text_by_right( {x=313, y=663}, '-'..el_time)
     if img ~= nil and string.len(img) > 0 then
         get_img(mediaSrc, img)
     else

@@ -30,11 +30,7 @@ function draw_dash_bar(bar)
             cairo_move_to (cr, start_x, bar.y)
         end
         local color = bar.colors[k]
-        if type(color.color) == 'string' then
-            cairo_set_source_rgba(cr, rgb_to_r_g_b(color.color, color.alpha))
-        else
-            cairo_set_source_rgba(cr, gradient(update_num, color.alpha))
-        end
+        cairo_set_source_rgba(cr, get_color(color.color, color.alpha))
         cairo_set_line_width (cr, bar.height)
         cairo_stroke (cr)
     end

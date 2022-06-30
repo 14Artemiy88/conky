@@ -16,6 +16,7 @@ function conky_main()
     cr = cairo_create(cs)
     update_num=tonumber(conky_parse('${updates}'))
     ---=====================================================================---
+    text_by_left({x=3, y=1020}, 'alt+SysRq+R / ctrl+alt+F2',{ size=10 })
 
     cpu_frame()
     mem_frame()
@@ -26,8 +27,6 @@ function conky_main()
 
     weather()
     player()
-
-    text_by_left({x=3, y=1020}, 'alt+SysRq+R / ctrl+alt+F2', '0xcccccc', 'Ubuntu', 10)
 
     cairo_destroy(cr)
     cr = nil
