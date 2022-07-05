@@ -1,11 +1,13 @@
 function player()
-    if (mopidy_player() == false and playerctl_player() == false) then
+    if (mpc_player() == false and playerctl_player() == false) then
         text_by_left ({x=25, y=650}, 'Ничего не играет', {color='0x666666', size=20})
     end
 end
 
----
-function mopidy_player()
+------------------------------
+--- Плэйлист плеера из mpc ---
+------------------------------
+function mpc_player()
     local current_t_a_al_d = trim(read_CLI('mpc current -f %title%💩%artist%💩%album%💩%date%'))
     if string.len(current_t_a_al_d) > 0 then
         local tt_ct_p_tc_pt = read_CLI('mpc status %state%💩%totaltime%💩%currenttime%💩%songpos%💩%length%💩%percenttime%')
@@ -41,7 +43,7 @@ function mopidy_player()
                         song_time = string.gsub('-'..el_time, "-0", "-")
                     end
                     song = string.gsub(song, '.wav', '')
-                    text_by_left ({x=53, y=y_start}, trim(song), {color=color}, { width=250, col=1 })
+                    text_by_left ({x=53, y=y_start}, trim(song), {color=color}, { width=240, col=1 })
                     text_by_right({x=313, y=y_start}, song_time, {color=color})
                     y_start = y_start + y_step
                 end
@@ -81,6 +83,9 @@ function mopidy_player()
     return false
 end
 
+--------------------------
+--- Плеер из playerctl ---
+--------------------------
 function playerctl_player()
     local players = {
         {
@@ -121,6 +126,9 @@ function playerctl_player()
     return false
 end
 
+------------------------
+--- Отрсиовка плеера ---
+------------------------
 function draw_player(icon, title, total_time, playing_time, el_time, artist, mediaSrc, img)
     draw_dash_bar({
         height = 7,
@@ -147,6 +155,9 @@ function draw_player(icon, title, total_time, playing_time, el_time, artist, med
     return true
 end
 
+--------------------------
+--- Получение картинки ---
+--------------------------
 function get_img(mediaSrc, img)
     local _, img_id = mediaSrc:match('(.*)-(.*)')
     local path = '/tmp/' .. trim(img_id) .. '.png'
