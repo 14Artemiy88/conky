@@ -178,7 +178,6 @@ function file_exists(name)
    if f ~= nil then io.close(f) return true else return false end
 end
 
-
 ------------------------
 --- Отрисовка текста ---
 ------------------------
@@ -187,6 +186,51 @@ function draw_text(coord, text, font_params, string_param)
     cairo_set_font_size (cr, font_params.size)
 	cairo_select_font_face (cr, font_params.font, nil, font_params.weight)
     cairo_set_source_rgba (cr, get_color(font_params.color, 1))
+    local x,y = get_coord(text, coord)
+    if string_param ~= nil and extents.width > string_param.width then
+        local text_strings = {}
+        local string_part = ''
+        local str_arr = split(text, " ")
+        for i in pairs(str_arr) do
+            local candidate = trim(string_part .. ' ' .. str_arr[i])
+            cairo_text_extents(cr, candidate, extents)
+            if extents.width > string_param.width then
+                table.insert(text_strings, string_part)
+                string_part = str_arr[i]
+            else
+                string_part = candidate
+            end
+            if i == #str_arr then
+                table.insert(text_strings, string_part)
+                break
+            end
+        end
+        if string_param.col == 1 then
+            if string_param.suffix == nil then string_param.suffix = '…' end
+            text = text_strings[1] .. string_param.suffix
+            x,y = get_coord(text, coord)
+            cairo_move_to (cr, x,y)
+            cairo_show_text (cr, text)
+        else
+            if string_param.col == nil then string_param.col = #text_strings end
+            local y_start = y
+            for str = 1, string_param.col do
+                x,y = get_coord(text_strings[str], coord)
+                cairo_move_to (cr, x, y_start)
+                cairo_show_text (cr, text_strings[str])
+                y_start = y_start + string_param.margin
+            end
+        end
+    else
+        cairo_move_to (cr, x,y)
+        cairo_show_text (cr, text)
+    end
+end
+
+--------------------------------------
+--- Координаты расположения текста ---
+--------------------------------------
+function get_coord(text, coord)
     cairo_text_extents(cr, text, extents)
     local x,y = coord.x, coord.y
     if (coord.position == 'right') then
@@ -195,45 +239,8 @@ function draw_text(coord, text, font_params, string_param)
     if (coord.position == 'center') then
         x,y = coord.x - (extents.width/2 + extents.x_bearing), coord.y - (extents.height/2 + extents.y_bearing)
     end
-    if string_param ~= nil then
-        if extents.width > string_param.width then
-            local text_strings = {}
-            local string_part = ''
-            local str_arr = split(text, " ")
-            for i in pairs(str_arr) do
-                local candidate = trim(string_part .. ' ' .. str_arr[i])
-                cairo_text_extents(cr, candidate, extents)
-                if extents.width > string_param.width then
-                    table.insert(text_strings, string_part)
-                    string_part = str_arr[i]
-                else
-                    string_part = candidate
-                end
-                if i == #str_arr then
-                    table.insert(text_strings, string_part)
-                    break
-                end
-            end
-            if string_param.col == 1 then
-                cairo_move_to (cr, x,y)
-                cairo_show_text (cr, text_strings[1] .. '…')
-            else
-                if string_param.col == nil then string_param.col = #text_strings end
-                local y_start = y
-                for str = 1, string_param.col do
-                    cairo_move_to (cr, x, y_start)
-                    cairo_show_text (cr, text_strings[str])
-                    y_start = y_start + string_param.margin
-                end
-            end
-        else
-            cairo_move_to (cr, x,y)
-            cairo_show_text (cr, text)
-        end
-    else
-        cairo_move_to (cr, x,y)
-        cairo_show_text (cr, text)
-    end
+
+    return x, y
 end
 
 -------------------------------------
