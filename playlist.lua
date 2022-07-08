@@ -14,18 +14,18 @@ function mpc_player()
         local state,tt_m,tt_s,ct_m,ct_s,current_num,total_count,_,pt = tt_ct_p_tc_pt:match('(%a+)💩(%d+):(%d+)💩(%d+):(%d+)💩(%d+)💩(%d+)💩(%s+)(%d+)')
         if state == 'playing' then
             local current,artist,album,date = current_t_a_al_d:match('(.*)💩(.*)💩(.*)💩(%d*)')
-            if tt_m == nil then tt_m, tt_s, ct_m, ct_s, total_count = 0, 0, 0, 0, 0 end
             local u_el_time = (tt_m * 60 + tt_s) - (ct_m * 60 + ct_s)
             local el_time   = os.date("%M:%S", u_el_time)
             local count = 5
             current_num = tonumber(current_num)
-            local start = tonumber(total_count - count + 1)
-            if total_count - current_num >= count then
-                start = current_num
+            local start = current_num
+            if total_count - current_num < count then
+                start = tonumber(total_count - count + 1)
             end
             local stop = start + count
             local el_total_time = 0
             local y_start = 635
+            local y_step = 18
             local playlist = split(read_CLI('mpc playlist -f %title%💩%time%💩%album%'), '\n')
             for N in pairs(playlist) do
                 local song, time_m, time_s, pl_album = playlist[N]:match('(.*)💩(%d+):(%d+)💩(.*)')
@@ -33,7 +33,6 @@ function mpc_player()
                     el_total_time = el_total_time + time_m * 60 + time_s
                 end
                 if start <= N and N < stop then
-                    local y_step = 18
                     local color = def.color
                     if pl_album ~= album then color = '0x666666' end
                     local song_time = time_m .. ':' .. time_s
@@ -43,19 +42,12 @@ function mpc_player()
                         song_time = string.gsub('-'..el_time, "-0", "-")
                     end
                     song = string.gsub(song, '.wav', '')
-                    text_by_left ({x=53, y=y_start}, trim(song), {color=color}, { width=240, col=1 })
+                    text_by_left ({x=53, y=y_start}, trim(song), {color=color}, { width=230, col=1 })
                     text_by_right({x=313, y=y_start}, song_time, {color=color})
                     y_start = y_start + y_step
                 end
             end
 
-            local total_time
-            if el_total_time >= 3600 then
-                total_time = os.date("-%X", el_total_time-5*60*60)
-            else
-                total_time = os.date("-%M:%S", el_total_time)
-            end
-            if string.len(date) > 0 then date = ' ('..date..')' else date = '' end
             draw_dash_bar({
                 height = 7,
                 width = 310,
@@ -69,12 +61,19 @@ function mpc_player()
                     { color = def.color, alpha = .3 },
                 }
             })
-            --album = cut_string(album, 28, '…')
+
+            local total_time
+            if el_total_time >= 3600 then
+                total_time = os.date("-%X", el_total_time-5*60*60)
+            else
+                total_time = os.date("-%M:%S", el_total_time)
+            end
+            if string.len(date) > 0 then date = ' ('..date..')' else date = '' end
             text_by_left  ({x=5, y=600}, artist, { weight = weight_bold })
             text_by_right ({x=313, y=600}, album..date, nil, { width=210, col=1, suffix='…'..date })
             display_image ({ coord = { x = 5, y = 625 }, img = '/tmp/album_cover.png'} )
             text_by_center( {x=23, y=685}, current_num..'/'..total_count )
-            text_by_center( {x=23, y=701}, string.gsub(total_time, "-0", "-"), {} )
+            text_by_center( {x=23, y=702}, string.gsub(total_time, "-0", "-"), {} )
 
             return true
         end
@@ -91,6 +90,7 @@ function playerctl_player()
         {
             player = 'vlc',
             icon = scripts .. 'img/VLC.png',
+            color = '0xFE8D08',
             params = {
                 'title',
                 'mpris:length',
@@ -101,6 +101,7 @@ function playerctl_player()
         {
             player = 'plasma-browser-integration',
             icon = scripts .. 'img/nocover.png',
+            color = update_num,
             params = {
                 'title',
                 'mpris:length',
@@ -119,7 +120,7 @@ function playerctl_player()
         if string.len(player) > 0 then
             local pattern = '💩(.*)'
 
-            return draw_player( players[key].icon, player:match('(.*)' .. pattern:rep(#players[key].params-1)) )
+            return draw_player( players[key].icon, players[key].color, player:match('(.*)' .. pattern:rep(#players[key].params-1)) )
         end
     end
 
@@ -129,7 +130,8 @@ end
 ------------------------
 --- Отрсиовка плеера ---
 ------------------------
-function draw_player(icon, title, total_time, playing_time, el_time, artist, mediaSrc, img)
+function draw_player(icn, clr, title, total_time, playing_time, el_time, artist, mediaSrc, img)
+    local icon, color = get_icon(mediaSrc, icn, clr)
     draw_dash_bar({
         height = 7,
         width = 310,
@@ -139,7 +141,7 @@ function draw_player(icon, title, total_time, playing_time, el_time, artist, med
         y = 640,
         value = tonumber(playing_time/total_time * 100),
         colors = {
-            { color = update_num, alpha = 1 },
+            { color = color, alpha = 1 },
             { color = def.color, alpha = .3 },
         }
     })
@@ -167,5 +169,18 @@ function get_img(mediaSrc, img)
         img_tml_command = string.format(img_tml_command,img,path)
         os.execute(img_tml_command)
     end
-    display_image ({ coord = { x = 3, y = 654 }, img = path} )
+    display_image ({ coord = { x = 3, y = 654 }, img = get_icon(mediaSrc, path)} )
+end
+
+function get_icon(mediaSrc, icon, color)
+    if mediaSrc ~= nil then
+        if string.sub(mediaSrc, 14, 16) == 'vk.' then
+            return scripts .. 'img/vk.png', '0x4986CD'
+        end
+        if string.sub(mediaSrc, 14, 16) == 'hd.' then
+            return scripts .. 'img/kinipoisk.png', color
+        end
+    end
+
+    return icon, color
 end
