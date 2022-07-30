@@ -24,7 +24,7 @@ function mpc_player()
             end
             local stop = start + count
             local el_total_time = 0
-            local y_start = 635
+            local y_start = 640
             local y_step = 18
             local playlist = split(read_CLI('mpc playlist -f %title%💩%time%💩%album%'), '\n')
             for N in pairs(playlist) do
@@ -54,7 +54,7 @@ function mpc_player()
                 seg_width = 3,
                 seg_margin = 3,
                 start_x = 4,
-                y = 612,
+                y = 602,
                 value = tonumber(pt),
                 colors = {
                     { color = '0x3daee9', alpha = 1 },
@@ -69,11 +69,11 @@ function mpc_player()
                 total_time = os.date("-%M:%S", el_total_time)
             end
             if string.len(date) > 0 then date = ' ('..date..')' else date = '' end
-            text_by_left  ({x=5, y=600}, artist, { weight = weight_bold })
-            text_by_right ({x=313, y=600}, album..date, nil, { width=210, col=1, suffix='…'..date })
-            display_image ({ coord = { x = 5, y = 625 }, img = '/tmp/album_cover.png'} )
-            text_by_center( {x=23, y=685}, current_num..'/'..total_count )
-            text_by_center( {x=23, y=702}, string.gsub(total_time, "-0", "-"), {} )
+            text_by_left  ({x=5, y=590}, artist, { weight = weight_bold })
+            text_by_left ({x=5, y=621}, album..date, nil, { width=300, col=1, suffix='…'..date })
+            display_image ({ coord = { x = 5, y = 630 }, img = '/tmp/album_cover.png'} )
+            text_by_center( {x=23, y=690}, current_num..'/'..total_count )
+            text_by_center( {x=23, y=707}, string.gsub(total_time, "-0", "-"), {} )
 
             return true
         end
@@ -145,6 +145,9 @@ function draw_player(icn, clr, title, total_time, playing_time, el_time, artist,
             { color = def.color, alpha = .3 },
         }
     })
+    if string.sub(mediaSrc, 14, 16) == 'vk.' then
+        artist, title = trim(read_CLI("playerctl metadata -f '{{ title }}'")):match('(.*) — (.*)')
+    end
     text_by_left ({x=5, y=627}, artist, { size=13 })
     text_by_left ({x=55, y=663}, title, { size=13 },{width = 210, margin=15})
     text_by_right( {x=313, y=663}, '-'..el_time)
@@ -172,6 +175,9 @@ function get_img(mediaSrc, img)
     display_image ({ coord = { x = 3, y = 654 }, img = get_icon(mediaSrc, path)} )
 end
 
+--------------------------
+--- Получение иконки ---
+--------------------------
 function get_icon(mediaSrc, icon, color)
     if mediaSrc ~= nil then
         if string.sub(mediaSrc, 14, 16) == 'vk.' then
