@@ -57,10 +57,10 @@ function mopidy_player()
         }
     })
     local total_time = math.ceil((totalTime - time)/1000)
-    if totalTime >= 3600 then
+    if total_time >= 3600 then
         total_time = os.date("-%X", total_time-5*60*60)
     else
-        total_time = os.date("-%M:%S", el_total_time)
+        total_time = os.date("-%M:%S", total_time)
     end
     if string.len(date) > 0 then date = ' ('..date..')' else date = '' end
     text_by_left  ({x=5, y=590}, current.track.artists[1].name, { weight = weight_bold })
