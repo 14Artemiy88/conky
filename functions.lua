@@ -81,7 +81,7 @@ end
 --- Разбить строку на подстроки ---
 -----------------------------------
 function split(str, pat)
-   local t = {}  -- NOTE: use {n = 0} in Lua-5.0
+   local t = {}
    local fpat = "(.-)" .. pat
    local last_end = 1
    local s, e, cap = str:find(fpat, 1)
@@ -185,8 +185,15 @@ function draw_text(coord, text, font_params, string_param)
     font_params = set_def_font_params(font_params)
     cairo_set_font_size (cr, font_params.size)
 	cairo_select_font_face (cr, font_params.font, nil, font_params.weight)
-    cairo_set_source_rgba (cr, get_color(font_params.color, 1))
     local x,y = get_coord(text, coord)
+    if font_params.background ~= nil then
+        cairo_move_to (cr, coord.x-17, coord.y)
+        cairo_line_to (cr, coord.x+extents.width, coord.y) --- TODO: переделать с учётом string_param.width
+        cairo_set_line_width (cr, font_params.size+7)
+        cairo_set_source_rgba (cr, get_color(font_params.background.color, font_params.background.alpha))
+        cairo_stroke (cr)
+    end
+    cairo_set_source_rgba (cr, get_color(font_params.color, 1))
     if string_param ~= nil and extents.width > string_param.width then
         local text_strings = {}
         local string_part = ''

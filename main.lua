@@ -1,6 +1,7 @@
 require 'cairo'
 
 scripts = '/home/artemiy/.conky/scripts/'
+json = dofile (scripts .. "json.lua")
 
 dofile (scripts .. "params.lua")
 dofile (scripts .. "frames.lua")
