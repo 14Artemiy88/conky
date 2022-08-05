@@ -9,38 +9,43 @@ function mopidy_player()
     if (stsusjson ~= '{"jsonrpc": "2.0", "id": 1, "result": "playing"}') then return false end
 
     local URL = {
-        currentUrl = '{"jsonrpc": "2.0", "id": 1, "method": "core.playback.get_current_tl_track"}',
-        trackListUrl = '{"jsonrpc": "2.0", "id": 2, "method": "core.tracklist.get_tl_tracks"}',
-        TimeUrl = '{"jsonrpc": "2.0", "id": 3, "method": "core.playback.get_time_position"}',
-        indexUrl = '{"jsonrpc": "2.0", "id": 4, "method": "core.tracklist.index"}',
-        totalUrl = '{"jsonrpc": "2.0", "id": 5, "method": "core.tracklist.get_length"}',
+        currentUrl   = '{"jsonrpc": "2.0", "id": 1, "method": "core.playback.get_current_tl_track"},',
+        trackListUrl = '{"jsonrpc": "2.0", "id": 2, "method": "core.tracklist.get_tl_tracks"},',
+        TimeUrl      = '{"jsonrpc": "2.0", "id": 3, "method": "core.playback.get_time_position"},',
+        indexUrl     = '{"jsonrpc": "2.0", "id": 4, "method": "core.tracklist.index"},',
+        totalUrl     = '{"jsonrpc": "2.0", "id": 5, "method": "core.tracklist.get_length"}',
     }
     local json_response = read_CLI(
-"curl -d '["..URL.currentUrl..","..URL.trackListUrl..","..URL.TimeUrl..","..URL.indexUrl..", "..URL.totalUrl.."]' -H 'Content-Type: application/json' http://localhost:6680/mopidy/rpc"
+"curl -d '["..
+            URL.currentUrl..
+            URL.trackListUrl..
+            URL.TimeUrl..
+            URL.indexUrl..
+            URL.totalUrl..
+        "]' -H 'Content-Type: application/json' http://localhost:6680/mopidy/rpc"
     )
     local response = json.decode(json_response)
     local current, trackList, time, index, total = response[1].result, response[2].result,response[3].result,response[4].result,response[5].result
-    local curentTl = current.tlid
-    local date = current.track.album.date
-    local album = current.track.album.name
     local totalTime = 0
-    local y_start = 640
-    local y_step = 18
+    local y_start, y_step = 640, 18
     for N in pairs(trackList) do
-        if trackList[N].tlid >= curentTl then
+        if trackList[N].tlid >= current.tlid then
             totalTime = totalTime + trackList[N].track.length
-            if trackList[N].tlid < curentTl + 5 or (total - curentTl > 5 and trackList[N].tlid > total - 5)then
-                local song_time = os.date("%M:%S", math.ceil(trackList[N].track.length/1000))
-                local color = def.color
-                if trackList[N].track.album.name ~= album then color = '0x666666' end
-                if trackList[N].tlid == curentTl  then
-                    color = '0x3daee9'
-                    song_time = os.date("-%M:%S", math.ceil((trackList[N].track.length - time)/1000))
-                end
-                text_by_left ({x=53, y=y_start}, trackList[N].track.name, {color=color}, { width=230, col=1 })
-                text_by_right({x=313, y=y_start}, song_time, {color=color})
-                y_start = y_start + y_step
+        end
+        if
+            (trackList[N].tlid >= current.tlid and trackList[N].tlid < current.tlid + 5)
+             or (total - index < 5 and N > total - 5)
+        then
+            local song_time = os.date("%M:%S", math.floor(trackList[N].track.length/1000))
+            local color = def.color
+            if trackList[N].track.album.name ~= current.track.album.name then color = '0x666666' end
+            if trackList[N].tlid == current.tlid then
+                color = '0x3daee9'
+                song_time = os.date("-%M:%S", math.floor((trackList[N].track.length - time)/1000))
             end
+            text_by_left ({x=53, y=y_start}, trackList[N].track.name, {color=color}, { width=230, col=1 })
+            text_by_right({x=313, y=y_start}, song_time, {color=color})
+            y_start = y_start + y_step
         end
     end
     draw_dash_bar({
@@ -56,15 +61,16 @@ function mopidy_player()
             { color = def.color, alpha = .3 },
         }
     })
-    local total_time = math.ceil((totalTime - time)/1000)
+    local total_time = math.floor((totalTime - time)/1000)
     if total_time >= 3600 then
         total_time = os.date("-%X", total_time-5*60*60)
     else
         total_time = os.date("-%M:%S", total_time)
     end
+    local date = current.track.album.date
     if string.len(date) > 0 then date = ' ('..date..')' else date = '' end
     text_by_left  ({x=5, y=590}, current.track.artists[1].name, { weight = weight_bold })
-    text_by_left ({x=5, y=621}, album..date, nil, { width=300, col=1, suffix='…'..date })
+    text_by_left ({x=5, y=621}, current.track.album.name..date, nil, { width=300, col=1, suffix='…'..date })
     display_image ({ coord = { x = 5, y = 630 }, img = '/tmp/album_cover.png'} )
     text_by_center( {x=23, y=690}, index..'/'..total, {background={color='0x000000', alpha=.5}} )
     text_by_center( {x=23, y=707}, string.gsub(total_time, "-0", "-"), {} )
