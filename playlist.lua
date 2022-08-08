@@ -140,9 +140,9 @@ function draw_player(icn, clr, title, total_time, playing_time, el_time, artist,
             { color = def.color, alpha = .3 },
         }
     })
-    if string.sub(mediaSrc, 14, 16) == 'vk.' then
-        artist, title = trim(read_CLI("playerctl metadata -f '{{ title }}'")):match('(.*) — (.*)')
-    end
+    --if string.sub(mediaSrc, 14, 16) == 'vk.' then
+    --    artist, title = trim(read_CLI("playerctl metadata -f '{{ title }}'")):match('(.*) — (.*)')
+    --end
     text_by_left ({x=5, y=627}, artist, { size=13 })
     text_by_left ({x=55, y=663}, title, { size=13 },{width = 210, margin=15})
     text_by_right( {x=313, y=663}, '-'..el_time)

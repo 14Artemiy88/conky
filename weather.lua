@@ -6,7 +6,7 @@ local min_img_path = scripts .. "/gismeteo/min_icons/min_"
 
 local weather_data = { '','','' }
 local need_count = 4
-local xs = { 20, 112, 203, 282 } -- положение каждого элемента по горизонтали
+local xs = { 20, 110, 210, 300 } -- положение каждого элемента по горизонтали
 
 --------------
 --- Погода ---
@@ -40,13 +40,13 @@ function weather_now()
     local comf = string.gsub(response.temperature.comfort.C, ",", ".")
     text_by_left ({x=10,  y=770}, temp, { color='0x02c3fa', font='LED', size='58' })
     text_by_left ({x=0,   y=787}, comf, { font='LED', size='38'})
-    text_by_right({x=250, y=755}, format_wind(response.wind.direction.scale_8), { font='Arrows', size='35' })
-    text_by_right({x=270, y=750}, response.wind.speed.m_s, { font='LED', size='18' })
-    text_by_right({x=300, y=750}, 'm/s', { font='LED' })
-    text_by_right({x=240, y=770}, response.pressure.mm_hg_atm, { font='LED', size='18' })
-    text_by_right({x=300, y=770}, 'мм.рт.ст.')
-    text_by_right({x=300, y=787}, response.description.full)
-    display_image( { img = img_path..response.icon..'.png', coord = { x = 130, y = 730 } } )
+    text_by_right({x=263, y=755}, format_wind(response.wind.direction.scale_8), { font='Arrows', size='35' })
+    text_by_right({x=283, y=750}, response.wind.speed.m_s, { font='LED', size='18' })
+    text_by_right({x=313, y=750}, 'm/s', { font='LED' })
+    text_by_right({x=253, y=770}, response.pressure.mm_hg_atm, { font='LED', size='18' })
+    text_by_right({x=313, y=770}, 'мм.рт.ст.')
+    text_by_right({x=313, y=787}, response.description.full)
+    display_image( { img = img_path..response.icon..'.png', coord = { x = 143, y = 730 } } )
 end
 
 ----------------------------
