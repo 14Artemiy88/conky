@@ -40,6 +40,34 @@ function display_image(icon)
     cairo_surface_destroy (image_bg)
 end
 
+function draw_album_progress_line(coord, texts, pass)
+    cairo_text_extents(cr, texts.left, extents)
+    local left_width = extents.width
+    cairo_text_extents(cr, texts.right, extents)
+    local right_width = extents.width
+    local length = left_width - right_width - 10
+
+    if (length > 30) then
+        local start = coord.x_start + left_width + 5
+        local finish = coord.x_end
+        if right_width > 0 then
+            finish = coord.x_end - right_width - 5
+        end
+        cairo_move_to (cr, start, coord.y)
+        cairo_line_to (cr, finish, coord.y)
+        cairo_set_line_width (cr, 2)
+        cairo_set_source_rgba (cr, get_color('0xffffff', 1))
+        cairo_stroke (cr)
+
+        finish = start + (finish-start)*pass
+        cairo_move_to (cr, start, coord.y)
+        cairo_line_to (cr, finish, coord.y)
+        cairo_set_line_width (cr, 2)
+        cairo_set_source_rgba (cr, get_color('0x3daee9', 1))
+        cairo_stroke (cr)
+    end
+end
+
 ----------------------
 --- Вывести массив ---
 ----------------------
