@@ -26,8 +26,8 @@ function conky_main()
         draw_dash_bar(params[k])
     end
 
-    weather()
     player()
+    weather()
 
     cairo_destroy(cr)
     cr = nil

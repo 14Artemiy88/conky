@@ -45,11 +45,10 @@ function draw_album_progress_line(coord, texts, pass)
     local left_width = extents.width
     cairo_text_extents(cr, texts.right, extents)
     local right_width = extents.width
-    local length = left_width - right_width - 10
-
+    local start = coord.x_start + left_width + 5
+    local finish = coord.x_end
+    local length = finish - start - 10
     if (length > 30) then
-        local start = coord.x_start + left_width + 5
-        local finish = coord.x_end
         if right_width > 0 then
             finish = coord.x_end - right_width - 5
         end
