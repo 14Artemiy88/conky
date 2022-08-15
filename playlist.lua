@@ -30,12 +30,20 @@ function mopidy_player()
     local y_start, y_step = 640, 18
     local album_time = 0
     local pass_album_time = 0
+    local current_album = ''
+    local date = ''
+    if current.track.album ~= nil then
+        current_album = current.track.album.name
+        date = '['..current.track.album.date..']'
+    end
     for N in pairs(trackList) do
-        if trackList[N].track.album.name == current.track.album.name then album_time = album_time + trackList[N].track.length end
+        local album = ''
+        if trackList[N].track.album ~= nil then album = trackList[N].track.album.name end
+        if album == current_album then album_time = album_time + trackList[N].track.length end
         if trackList[N].tlid >= current.tlid then
             totalTime = totalTime + trackList[N].track.length
         else
-            if trackList[N].track.album.name == current.track.album.name then pass_album_time = pass_album_time + trackList[N].track.length end
+            if album == current_album then pass_album_time = pass_album_time + trackList[N].track.length end
         end
         if
             (trackList[N].tlid >= current.tlid and trackList[N].tlid < current.tlid + 5)
@@ -43,7 +51,7 @@ function mopidy_player()
         then
             local song_time = os.date("%M:%S", math.floor(trackList[N].track.length/1000))
             local color = def.color
-            if trackList[N].track.album.name ~= current.track.album.name then color = '0x666666' end
+            if album ~= current_album then color = '0x666666' end
             if trackList[N].tlid == current.tlid then
                 color = '0x3daee9'
                 song_time = os.date("-%M:%S", math.floor((trackList[N].track.length - time)/1000))
@@ -72,13 +80,15 @@ function mopidy_player()
     else
         total_time = os.date("-%M:%S", total_time)
     end
-    local date = current.track.album.date
-    if date ~= nil then date = '['..date..']' else date = '' end
-    text_by_left  ({x=5, y=590}, current.track.artists[1].name, { weight = weight_bold })
-    text_by_left ({x=5, y=621}, current.track.album.name, nil, { width=280, col=1})
+    local artist = ""
+    if current.track.artists ~= nil then
+        artist = current.track.artists[1].name
+    end
+    text_by_left  ({x=5, y=590}, artist, { weight = weight_bold })
+    text_by_left ({x=5, y=621}, current_album, nil, { width=280, col=1})
     draw_album_progress_line(
             { x_start=5, x_end=313, y=617},
-            {left=current.track.album.name, right=date },
+            {left=current_album, right=date },
             (pass_album_time + time)/album_time
     )
     text_by_right ({x=313, y=621}, date, nil)
@@ -103,6 +113,7 @@ function playerctl_player()
                 'mpris:length',
                 'position',
                 'duration(mpris:length - position)',
+                'xesam:artist',
             },
         },
         {
