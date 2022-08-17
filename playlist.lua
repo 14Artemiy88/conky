@@ -34,7 +34,9 @@ function mopidy_player()
     local date = ''
     if current.track.album ~= nil then
         current_album = current.track.album.name
-        date = '['..current.track.album.date..']'
+        if current.track.album.date ~= nil then
+            date = '['..current.track.album.date..']'
+        end
     end
     for N in pairs(trackList) do
         local album = ''
