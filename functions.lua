@@ -40,33 +40,39 @@ function display_image(icon)
     cairo_surface_destroy (image_bg)
 end
 
-function draw_album_progress_line(coord, texts, pass)
-    cairo_text_extents(cr, texts.left, extents)
-    local left_width = extents.width
-    cairo_text_extents(cr, texts.right, extents)
-    local right_width = extents.width
+function draw_album_progress_line(coord, parts)
+    local total = parts.total
+    local current = parts.current
     local start = coord.x_start
-     if left_width > 0 then
-        start = coord.x_start + left_width + 5
-    end
-    local finish = coord.x_end
-    local length = finish - start - 10
-    if (length > 30) then
-        if right_width > 0 then
-            finish = coord.x_end - right_width - 5
-        end
-        cairo_move_to (cr, start, coord.y)
-        cairo_line_to (cr, finish, coord.y)
-        cairo_set_line_width (cr, 2)
-        cairo_set_source_rgba (cr, get_color('0xffffff', 1))
-        cairo_stroke (cr)
+    local length = coord.x_end - start
+    local part_length = length/total
 
-        finish = start + (finish-start)*pass
+    local i = current - 1
+    while i > 0 do
         cairo_move_to (cr, start, coord.y)
-        cairo_line_to (cr, finish, coord.y)
+        cairo_line_to (cr, start+part_length-2, coord.y)
         cairo_set_line_width (cr, 2)
         cairo_set_source_rgba (cr, get_color('0x3daee9', 1))
         cairo_stroke (cr)
+        start = start+part_length
+        i = i - 1
+    end
+
+    cairo_move_to (cr, start+1, coord.y)
+    cairo_line_to (cr, start+part_length*parts.pass-1, coord.y)
+    cairo_set_line_width (cr, 2)
+    cairo_set_source_rgba (cr, get_color('0x3daee9', 3))
+    cairo_stroke (cr)
+
+    i = total - current + 1
+    while i > 0 do
+        cairo_move_to (cr, start, coord.y)
+        cairo_line_to (cr, start+part_length-2, coord.y)
+        cairo_set_line_width (cr, 2)
+        cairo_set_source_rgba (cr, get_color(def.color, .3))
+        cairo_stroke (cr)
+        start = start+part_length
+        i = i - 1
     end
 end
 
