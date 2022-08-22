@@ -40,40 +40,35 @@ function display_image(icon)
     cairo_surface_destroy (image_bg)
 end
 
-function draw_album_progress_line(coord, parts)
+function draw_album_progress_line(coord, parts, lengths)
     local total = parts.total
     local current = parts.current
     local start = coord.x_start
-    local length = coord.x_end - start
-    local part_length = length/total
+    local length = coord.x_end - start + 2
+    local current_start = 0
+    local current_length = 0
 
-    local i = current - 1
-    while i > 0 do
+    for i=1, total do
+        local part_length = length*lengths.tracks[i] /lengths.total
+        local color, alpha = def.color, .3
+        if i < current then color, alpha = '0x3daee9', 1 end
+        if i == current then
+            current_start = start
+            current_length = part_length
+        end
         cairo_move_to (cr, start, coord.y)
         cairo_line_to (cr, start+part_length-2, coord.y)
         cairo_set_line_width (cr, 2)
-        cairo_set_source_rgba (cr, get_color('0x3daee9', 1))
+        cairo_set_source_rgba (cr, get_color(color, alpha))
         cairo_stroke (cr)
         start = start+part_length
-        i = i - 1
     end
 
-    cairo_move_to (cr, start+1, coord.y)
-    cairo_line_to (cr, start+part_length*parts.pass-1, coord.y)
+    cairo_move_to (cr, current_start+1, coord.y)
+    cairo_line_to (cr, current_start+current_length*parts.pass-1, coord.y)
     cairo_set_line_width (cr, 2)
-    cairo_set_source_rgba (cr, get_color('0x3daee9', 3))
+    cairo_set_source_rgba (cr, get_color('0x3daee9', 1))
     cairo_stroke (cr)
-
-    i = total - current + 1
-    while i > 0 do
-        cairo_move_to (cr, start, coord.y)
-        cairo_line_to (cr, start+part_length-2, coord.y)
-        cairo_set_line_width (cr, 2)
-        cairo_set_source_rgba (cr, get_color(def.color, .3))
-        cairo_stroke (cr)
-        start = start+part_length
-        i = i - 1
-    end
 end
 
 ----------------------

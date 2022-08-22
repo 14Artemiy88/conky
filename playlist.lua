@@ -28,8 +28,6 @@ function mopidy_player()
     local current, trackList, time, index, total = response[1].result, response[2].result,response[3].result,response[4].result,response[5].result
     local totalTime = 0
     local y_start, y_step = 640, 18
-    local album_time = 0
-    local pass_album_time = 0
     local current_album = ''
     local date = ''
     if current.track.album ~= nil then
@@ -39,17 +37,18 @@ function mopidy_player()
         end
     end
     local album_track_count = 0
+    local tracks_lengths = {}
+    local album_lengths = 0
     for N in pairs(trackList) do
         local album = ''
         if trackList[N].track.album ~= nil then album = trackList[N].track.album.name end
         if album == current_album then
-            album_time = album_time + trackList[N].track.length
             album_track_count = album_track_count + 1
+            tracks_lengths[album_track_count] = trackList[N].track.length
+            album_lengths = album_lengths + trackList[N].track.length
         end
         if trackList[N].tlid >= current.tlid then
             totalTime = totalTime + trackList[N].track.length
-        else
-            if album == current_album then pass_album_time = pass_album_time + trackList[N].track.length end
         end
         if
             (trackList[N].tlid >= current.tlid and trackList[N].tlid < current.tlid + 5)
@@ -94,7 +93,8 @@ function mopidy_player()
     text_by_left ({x=5, y=621}, current_album, nil, { width=280, col=1})
     draw_album_progress_line(
         { x_start=5, x_end=313, y=625},
-        {total=album_track_count, current=current.track.track_no, pass=time/current.track.length}
+        {total=album_track_count, current=current.track.track_no, pass=time/current.track.length},
+            { tracks=tracks_lengths, total=album_lengths }
     )
     text_by_right ({x=313, y=621}, date, nil)
     display_image ({ coord = { x = 5, y = 630 }, img = '/tmp/album_cover.png'} )
