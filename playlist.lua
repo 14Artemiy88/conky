@@ -27,13 +27,13 @@ function mopidy_player()
     local response = json.decode(json_response)
     local current, trackList, time, index, total = response[1].result, response[2].result,response[3].result,response[4].result,response[5].result
     local totalTime = 0
-    local y_start, y_step = 640, 18
+    local y_start, y_step = 642, 18
     local current_album = ''
     local date = ''
     if current.track.album ~= nil then
         current_album = current.track.album.name
         if current.track.album.date ~= nil then
-            date = '['..current.track.album.date..']'
+            date = current.track.album.date
         end
     end
     local album_track_count = 0
@@ -92,14 +92,14 @@ function mopidy_player()
     text_by_left  ({x=5, y=590}, artist, { weight = weight_bold })
     text_by_left ({x=5, y=621}, current_album, nil, { width=280, col=1})
     draw_album_progress_line(
-        { x_start=5, x_end=313, y=625},
+        { x_start=5, x_end=313, y=626},
         {total=album_track_count, current=current.track.track_no, pass=time/current.track.length},
             { tracks=tracks_lengths, total=album_lengths }
     )
     text_by_right ({x=313, y=621}, date, nil)
-    display_image ({ coord = { x = 5, y = 630 }, img = '/tmp/album_cover.png'} )
-    text_by_center( {x=23, y=690}, index..'/'..total, {background={color='0x000000', alpha=.5}} )
-    text_by_center( {x=23, y=707}, string.gsub(total_time, "-0", "-"), {} )
+    display_image ({ coord = { x = 5, y = 632 }, img = '/tmp/album_cover.png'} )
+    text_by_center( {x=23, y=692}, index..'/'..total, {background={color='0x000000', alpha=.5}} )
+    text_by_center( {x=23, y=709}, string.gsub(total_time, "-0", "-"), {} )
 
     return true
 end
@@ -160,7 +160,7 @@ function draw_player(icn, clr, title, total_time, playing_time, el_time, artist,
         seg_width = 3,
         seg_margin = 3,
         start_x = 4,
-        y = 640,
+        y = 620,
         value = tonumber(playing_time/total_time * 100),
         colors = {
             { color = color, alpha = 1 },
@@ -170,13 +170,13 @@ function draw_player(icn, clr, title, total_time, playing_time, el_time, artist,
     --if string.sub(mediaSrc, 14, 16) == 'vk.' then
     --    artist, title = trim(read_CLI("playerctl metadata -f '{{ title }}'")):match('(.*) — (.*)')
     --end
-    text_by_left ({x=5, y=627}, artist, { size=13 })
-    text_by_left ({x=55, y=663}, title, { size=13 },{width = 210, margin=15})
-    text_by_right( {x=313, y=663}, '-'..el_time)
+    text_by_left ({x=5, y=607}, artist, { size=13 })
+    text_by_left ({x=55, y=643}, title, { size=13 },{width = 210, margin=15})
+    text_by_right( {x=313, y=643}, '-'..el_time)
     if img ~= nil and string.len(img) > 0 then
         get_img(mediaSrc, img)
     else
-        display_image ({ coord = { x = 7, y = 652 }, img = icon} )
+        display_image ({ coord = { x = 7, y = 632 }, img = icon} )
     end
 
     return true
@@ -194,7 +194,7 @@ function get_img(mediaSrc, img)
         img_tml_command = string.format(img_tml_command,img,path)
         os.execute(img_tml_command)
     end
-    display_image ({ coord = { x = 3, y = 654 }, img = get_icon(mediaSrc, path)} )
+    display_image ({ coord = { x = 3, y = 634 }, img = get_icon(mediaSrc, path)} )
 end
 
 --------------------------
