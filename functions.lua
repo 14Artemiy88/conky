@@ -40,19 +40,20 @@ function display_image(icon)
     cairo_surface_destroy (image_bg)
 end
 
+----------------------------------
+--- Прогресс альбома по трекам ---
+----------------------------------
 function draw_album_progress_line(coord, parts, lengths)
-    local total = parts.total
-    local current = parts.current
     local start = coord.x_start
     local length = coord.x_end - start + 2
-    local current_start = 0
-    local current_length = 0
+    local current_start, current_length
 
-    for i=1, total do
+    -- все треки альбома --
+    for i=1, parts.total do
         local part_length = length*lengths.tracks[i] /lengths.total
         local color, alpha = def.color, .3
-        if i < current then color, alpha = '0x3daee9', 1 end
-        if i == current then
+        if i < parts.current then color, alpha = '0x3daee9', 1 end
+        if i == parts.current then
             current_start = start
             current_length = part_length
         end
@@ -64,8 +65,9 @@ function draw_album_progress_line(coord, parts, lengths)
         start = start+part_length
     end
 
-    cairo_move_to (cr, current_start+1, coord.y)
-    cairo_line_to (cr, current_start+current_length*parts.pass-1, coord.y)
+    -- прогресс текущего трека --
+    cairo_move_to (cr, current_start, coord.y)
+    cairo_line_to (cr, current_start+(current_length-2)*parts.pass, coord.y)
     cairo_set_line_width (cr, 2)
     cairo_set_source_rgba (cr, get_color('0x3daee9', 1))
     cairo_stroke (cr)
