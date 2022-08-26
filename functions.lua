@@ -56,6 +56,7 @@ function draw_album_progress_line(coord, parts, lengths)
         if i == parts.current then
             current_start = start
             current_length = part_length
+            color, alpha = '0x3daee9', .3
         end
         cairo_move_to (cr, start, coord.y)
         cairo_line_to (cr, start+part_length-2, coord.y)
