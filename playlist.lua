@@ -220,5 +220,7 @@ function time_format(time, symbol)
         time = os.date(symbol .. "%M:%S", time)
     end
 
+    if symbol == '' then return time end
+
     return string.gsub(time, symbol .."0", symbol)
 end
