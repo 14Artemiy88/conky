@@ -26,40 +26,42 @@ function mopidy_player()
     )
     local response = json.decode(json_response)
     local current, trackList, time, index, total = response[1].result, response[2].result,response[3].result,response[4].result,response[5].result
-    local totalTime = 0
     local y_start, y_step = 642, 18
-    local current_album = ''
-    local date = ''
+    local show_tracks = 5
+    local current_album, date = '', ''
     if current.track.album ~= nil then
         current_album = current.track.album.name
         if current.track.album.date ~= nil then
             date = current.track.album.date
         end
     end
-    local album_track_count = 0
+    local totalTime, album_track_count, album_length, album_el = 0, 0, 0, 0
     local tracks_lengths = {}
-    local album_lengths = 0
     for N in pairs(trackList) do
         local album = ''
         if trackList[N].track.album ~= nil then album = trackList[N].track.album.name end
         if album == current_album then
             album_track_count = album_track_count + 1
             tracks_lengths[album_track_count] = trackList[N].track.length
-            album_lengths = album_lengths + trackList[N].track.length
+            album_length = album_length + trackList[N].track.length
         end
-        if trackList[N].tlid >= current.tlid then
+        if trackList[N].tlid >= current.tlid and trackList[N].track.length ~= nil then
             totalTime = totalTime + trackList[N].track.length
+            if album == current_album then
+                album_el = album_el + trackList[N].track.length
+            end
         end
+
         if
-            (trackList[N].tlid >= current.tlid and trackList[N].tlid < current.tlid + 5)
-             or (total - index < 5 and N > total - 5)
+            (trackList[N].tlid >= current.tlid and trackList[N].tlid < current.tlid + show_tracks)
+             or (total - index < show_tracks and N > total - 5)
         then
-            local song_time = os.date("%M:%S", math.floor(trackList[N].track.length/1000))
+            local song_time = time_format(trackList[N].track.length)
             local color = def.color
             if album ~= current_album then color = '0x666666' end
             if trackList[N].tlid == current.tlid then
                 color = '0x3daee9'
-                song_time = os.date("-%M:%S", math.floor((trackList[N].track.length - time)/1000))
+                song_time = time_format(trackList[N].track.length - time, '-')
             end
             text_by_left ({x=53, y=y_start}, trackList[N].track.name, {color=color}, { width=230, col=1 })
             text_by_right({x=313, y=y_start}, song_time, {color=color})
@@ -79,27 +81,23 @@ function mopidy_player()
             { color = def.color, alpha = .3 },
         }
     })
-    local total_time = math.floor((totalTime - time)/1000)
-    if total_time >= 3600 then
-        total_time = os.date("-%X", total_time-5*60*60)
-    else
-        total_time = os.date("-%M:%S", total_time)
-    end
+    totalTime = time_format(totalTime - time, '-')
+    album_el = time_format(album_el - time, '-')
     local artist = ""
     if current.track.artists ~= nil then
         artist = current.track.artists[1].name
     end
-    text_by_left  ({x=5, y=590}, artist, { weight = weight_bold })
-    text_by_left ({x=5, y=621}, current_album, nil, { width=280, col=1})
+    text_by_left  ({x=3, y=593}, artist, { weight = weight_bold, size=14 })
+    text_by_left ({x=3, y=620}, date .. ' ' .. current_album, nil, { width=280, col=1, size=13})
+    text_by_right ({x=313, y=620}, album_el, nil)
+    display_image ({ coord = { x = 5, y = 632 }, img = '/tmp/album_cover.png'} )
+    text_by_center( {x=23, y=692}, index..'/'..total, {background={color='0x000000', alpha=.5}} )
+    text_by_center( {x=23, y=709}, totalTime, {} )
     draw_album_progress_line(
         { x_start=5, x_end=313, y=626},
         {total=album_track_count, current=current.track.track_no, pass=time/current.track.length},
-            { tracks=tracks_lengths, total=album_lengths }
+            { tracks=tracks_lengths, total= album_length }
     )
-    text_by_right ({x=313, y=621}, date, nil)
-    display_image ({ coord = { x = 5, y = 632 }, img = '/tmp/album_cover.png'} )
-    text_by_center( {x=23, y=692}, index..'/'..total, {background={color='0x000000', alpha=.5}} )
-    text_by_center( {x=23, y=709}, string.gsub(total_time, "-0", "-"), {} )
 
     return true
 end
@@ -211,4 +209,16 @@ function get_icon(mediaSrc, icon, color)
     end
 
     return icon, color
+end
+
+function time_format(time, symbol)
+    if symbol == nil then symbol = '' end
+    time = math.floor(time/1000)
+    if time >= 3600 then
+        time = os.date(symbol .. "%X", time-5*60*60)
+    else
+        time = os.date(symbol .. "%M:%S", time)
+    end
+
+    return string.gsub(time, symbol .."0", symbol)
 end

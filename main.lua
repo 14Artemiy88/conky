@@ -18,7 +18,7 @@ function conky_main()
     update_num=tonumber(conky_parse('${updates}'))
     ---=====================================================================---
     text_by_left({x=3, y=1020}, 'alt+SysRq+R / ctrl+alt+F2',{ size=10 })
-
+    weather()
     cpu_frame()
     mem_frame()
     cpu_bar()
@@ -27,7 +27,6 @@ function conky_main()
     end
 
     player()
-    weather()
 
     cairo_destroy(cr)
     cr = nil
