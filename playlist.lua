@@ -25,7 +25,7 @@ function mopidy_player()
         "]' -H 'Content-Type: application/json' http://localhost:6680/mopidy/rpc"
     )
     local response = json.decode(json_response)
-    local current, trackList, time, index, total = response[1].result, response[2].result,response[3].result,response[4].result,response[5].result
+    local current, trackList, time, index, total = response[1].result, response[2].result, response[3].result, response[4].result + 1, response[5].result
     local y_start, y_step = 642, 18
     local show_tracks = 5
     local current_album, date = '', ''
@@ -54,7 +54,7 @@ function mopidy_player()
 
         if
             (trackList[N].tlid >= current.tlid and trackList[N].tlid < current.tlid + show_tracks)
-             or (total - index < show_tracks and N > total - 5)
+             or (total - index < show_tracks and N > total - show_tracks)
         then
             local song_time = time_format(trackList[N].track.length)
             local color = def.color
@@ -88,9 +88,9 @@ function mopidy_player()
         artist = current.track.artists[1].name
     end
     text_by_left  ({x=3, y=593}, artist, { weight = weight_bold, size=14 })
-    text_by_left ({x=3, y=620}, date .. ' ' .. current_album, nil, { width=280, col=1, size=13})
+    text_by_left ({x=3, y=620}, date .. ' ' .. current_album, nil, { width=300, col=1, size=13, additional_text=album_el})
     text_by_right ({x=313, y=620}, album_el, nil)
-    display_image ({ coord = { x = 5, y = 632 }, img = '/tmp/album_cover.png'} )
+    display_image ({ coord = { x = 5, y = 633 }, img = '/tmp/album_cover.png'} )
     text_by_center( {x=23, y=692}, index..'/'..total, {background={color='0x000000', alpha=.5}} )
     text_by_center( {x=23, y=709}, totalTime, {} )
     draw_album_progress_line(
@@ -122,7 +122,7 @@ function playerctl_player()
         {
             player = 'plasma-browser-integration',
             icon = scripts .. 'img/nocover.png',
-            color = update_num,
+            color = 'new_gradient',
             params = {
                 'title',
                 'mpris:length',
@@ -213,6 +213,7 @@ end
 
 function time_format(time, symbol)
     if symbol == nil then symbol = '' end
+    if time == nil then time = 0 end
     time = math.floor(time/1000)
     if time >= 3600 then
         time = os.date(symbol .. "%X", time-5*60*60)

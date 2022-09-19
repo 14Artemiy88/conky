@@ -13,6 +13,7 @@ weight_bold   = CAIRO_FONT_WEIGHT_BOLD
 --- Вывод текста слева ---
 ---------------------------
 function text_by_left(coord, text, font_params, string_param)
+    string_param = prepare_string_param(string_param)
     draw_text({x=coord.x, y=coord.y }, text, font_params, string_param)
 end
 
@@ -20,6 +21,7 @@ end
 --- Вывод текста справа ---
 ---------------------------
 function text_by_right(coord, text, font_params, string_param)
+    string_param = prepare_string_param(string_param)
     draw_text({ position='right', x=coord.x, y=coord.y}, text, font_params, string_param)
 end
 
@@ -294,4 +296,19 @@ function set_def_font_params(font_params)
     if font_params.color == nil then font_params.color = def.color end
 
     return font_params
+end
+
+------------------------------------
+--- Подготовить параметры стркои ---
+------------------------------------
+function prepare_string_param(string_param)
+    if string_param ~= nil and string_param.additional_text ~= nil then
+        font_params = set_def_font_params(font_params)
+        cairo_set_font_size (cr, font_params.size)
+        cairo_select_font_face (cr, font_params.font, nil, font_params.weight)
+        cairo_text_extents(cr, string_param.additional_text, extents)
+        string_param.width = string_param.width - ( extents.width + 3 )
+    end
+
+    return string_param
 end

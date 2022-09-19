@@ -17,9 +17,11 @@ function draw_dash_bar(bar)
     local seg_count = math.ceil(bar.width / (bar.seg_width + bar.seg_margin))
     local active_seg = math.ceil(seg_count * value / 100)
     local coord = {active_seg, seg_count-active_seg}
-    cairo_move_to (cr, start_x, bar.y)
+    local color
     for k = 1,2 do
         for i = 1, coord[k] do
+            cairo_move_to (cr, start_x, bar.y)
+            cairo_set_line_width (cr, bar.height)
             if i == 1 then
                 cairo_move_to (cr, start_x, bar.y)
             end
@@ -28,11 +30,13 @@ function draw_dash_bar(bar)
 
             start_x = start_x + bar.seg_margin
             cairo_move_to (cr, start_x, bar.y)
+            color = bar.colors[k].color
+            if color == 'new_gradient' then
+                color = update_num + i*4
+            end
+            cairo_set_source_rgba(cr, get_color(color, bar.colors[k].alpha))
+            cairo_stroke (cr)
         end
-        local color = bar.colors[k]
-        cairo_set_source_rgba(cr, get_color(color.color, color.alpha))
-        cairo_set_line_width (cr, bar.height)
-        cairo_stroke (cr)
     end
 end
 
