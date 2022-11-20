@@ -1,6 +1,6 @@
 function player()
     if (mopidy_player() == false and playerctl_player() == false) then
-        text_by_left ({x=25, y=650}, 'Ничего не играет', {color='0x666666', size=20})
+        draw_empty_player()
     end
 end
 

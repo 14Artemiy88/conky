@@ -32,7 +32,7 @@ end
 --- Актуальная погода ---
 -------------------------
 function weather_now()
-    if weather_data[1] == '' or os.date("%M:%S") == '00:01' then
+    if weather_data[1] == '' or os.date("%M:%S") == '00:01' or os.date("%M:%S") == '30:01' then
         get_weather(1, 'current', '')
     end
     local response = json.decode(weather_data[1]).response

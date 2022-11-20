@@ -312,3 +312,41 @@ function prepare_string_param(string_param)
 
     return string_param
 end
+
+-------------------------------------------
+--- Рисует плеер когда ничего не играет ---
+-------------------------------------------
+local start_x  = 25
+local finish_x = 148
+local start_y  = 625
+local finish_y = 703
+local text_start_x = math.random(start_x,finish_x)
+local text_start_y = math.random(start_y,finish_y)
+local xy = {-1, 1}
+local xv = xy[math.random(1,2)]
+local yv = xy[math.random(1,2)]
+function draw_empty_player()
+    local text = 'Ничего не играет'
+    if text_start_y <= start_y  and yv < 0 then yv = 1  end
+    if text_start_y >= finish_y and yv > 0 then yv = -1 end
+    if text_start_x <= start_x  and xv < 0 then xv = 1  end
+    if text_start_x >= finish_x and xv > 0 then xv = -1 end
+    text_start_x = text_start_x + 1 * xv
+    text_start_y = text_start_y + 1 * yv
+    text_by_left ({x=text_start_x, y=text_start_y}, text, {color='0x666666', size=20})
+    bars_background()
+end
+
+--- фон ---
+function bars_background()
+    local start = 600
+    local step = 10
+    for i = 0, 10 do
+        draw_dash_bar({
+            height = 7, width = 310, seg_width = 3, seg_margin = 3, start_x = 4, y = start + i*step, value = 100, colors = {
+                { color = 'new_gradient', alpha = .2 },
+                { color = 'new_gradient', alpha = .2 },
+        }})
+        i = i + 1
+    end
+end
