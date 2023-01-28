@@ -42,7 +42,7 @@ function mopidy_player()
         if trackList[N].track.album ~= nil then album = trackList[N].track.album.name end
         if album == current_album then
             album_track_count = album_track_count + 1
-            tracks_lengths[album_track_count] = trackList[N].track.length
+            tracks_lengths[N] = trackList[N].track.length
             album_length = album_length + trackList[N].track.length
         end
         if trackList[N].tlid >= current.tlid and trackList[N].track.length ~= nil then
@@ -96,7 +96,7 @@ function mopidy_player()
     draw_album_progress_line(
         { x_start=5, x_end=313, y=626},
         {total=album_track_count, current=current.track.track_no, pass=time/current.track.length},
-            { tracks=tracks_lengths, total= album_length }
+            { tracks=tracks_lengths, total=album_length }
     )
 
     return true
@@ -168,8 +168,12 @@ function draw_player(icn, clr, title, total_time, playing_time, el_time, artist,
     --if string.sub(mediaSrc, 14, 16) == 'vk.' then
     --    artist, title = trim(read_CLI("playerctl metadata -f '{{ title }}'")):match('(.*) — (.*)')
     --end
+    if mediaSrc ~= nil and string.sub(mediaSrc, 14, 16) == 'hd.' then
+        local kinopoisk_postfix = ' — смотреть онлайн в хорошем качестве — Кинопоиск'
+        title = string.gsub(title, kinopoisk_postfix, "")
+    end
     text_by_left ({x=5, y=607}, artist, { size=13 })
-    text_by_left ({x=55, y=643}, title, { size=13 },{width = 210, margin=15})
+    text_by_left ({x=55, y=643}, title, { size=13 },{width = 211, margin=15})
     text_by_right( {x=313, y=643}, '-'..el_time)
     if img ~= nil and string.len(img) > 0 then
         get_img(mediaSrc, img)

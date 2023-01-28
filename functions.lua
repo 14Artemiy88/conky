@@ -52,7 +52,7 @@ function draw_album_progress_line(coord, parts, lengths)
 
     -- все треки альбома --
     for i=1, parts.total do
-        local part_length = length*lengths.tracks[i] /lengths.total
+        local part_length = length * lengths.tracks[i] / lengths.total
         local color, alpha = def.color, .3
         if i < parts.current then color, alpha = '0x3daee9', 1 end
         if i == parts.current then
@@ -231,23 +231,7 @@ function draw_text(coord, text, font_params, string_param)
     end
     cairo_set_source_rgba (cr, get_color(font_params.color, 1))
     if string_param ~= nil and extents.width > string_param.width then
-        local text_strings = {}
-        local string_part = ''
-        local str_arr = split(text, " ")
-        for i in pairs(str_arr) do
-            local candidate = trim(string_part .. ' ' .. str_arr[i])
-            cairo_text_extents(cr, candidate, extents)
-            if extents.width > string_param.width then
-                table.insert(text_strings, string_part)
-                string_part = str_arr[i]
-            else
-                string_part = candidate
-            end
-            if i == #str_arr then
-                table.insert(text_strings, string_part)
-                break
-            end
-        end
+        local text_strings = get_text_strings(text, string_param.width)
         if string_param.col == 1 then
             if string_param.suffix == nil then string_param.suffix = '…' end
             text = text_strings[1] .. string_param.suffix
@@ -268,6 +252,31 @@ function draw_text(coord, text, font_params, string_param)
         cairo_move_to (cr, x,y)
         cairo_show_text (cr, text)
     end
+end
+
+--------------------------------
+--- Разбить текст по строкам ---
+--------------------------------
+function get_text_strings(text, width)
+    local text_strings = {}
+    local string_part = ''
+    local str_arr = split(text, " ")
+    for i in pairs(str_arr) do
+        local candidate = trim(string_part .. ' ' .. str_arr[i])
+        cairo_text_extents(cr, candidate, extents)
+        if extents.width > width then
+            table.insert(text_strings, string_part)
+            string_part = str_arr[i]
+        else
+            string_part = candidate
+        end
+        if i == #str_arr then
+            table.insert(text_strings, string_part)
+            break
+        end
+    end
+
+    return text_strings
 end
 
 --------------------------------------
@@ -344,8 +353,8 @@ function bars_background()
     for i = 0, 10 do
         draw_dash_bar({
             height = 7, width = 310, seg_width = 3, seg_margin = 3, start_x = 4, y = start + i*step, value = 100, colors = {
-                { color = 'new_gradient', alpha = .2 },
-                { color = 'new_gradient', alpha = .2 },
+                { color = 'new_gradient', alpha = .1 },
+                { color = 'new_gradient', alpha = .1 },
         }})
         i = i + 1
     end
