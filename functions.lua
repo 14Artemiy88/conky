@@ -135,45 +135,29 @@ function split(str, pat)
    return t
 end
 
------------------------------------
---- Разбить строку на подстроки ---
------------------------------------
-function string_to_strings(str,  length)
-    local str_strings = {}
-    if utf8.len(str) > length then
-        local string_part = ''
-        local str_arr = split(str, " ")
-        for i in pairs(str_arr) do
-            local candidate = string_part .. ' ' .. str_arr[i]
-            if utf8.len(candidate) >= length then
-                table.insert(str_strings, string_part)
-                string_part = str_arr[i]
-            else
-                string_part = candidate
-            end
-            if i == #str_arr then
-                table.insert(str_strings, string_part)
-                break
-            end
+--------------------------------
+--- Разбить текст по строкам ---
+--------------------------------
+function get_text_strings(text, width)
+    local text_strings = {}
+    local string_part = ''
+    local str_arr = split(text, " ")
+    for i in pairs(str_arr) do
+        local candidate = trim(string_part .. ' ' .. str_arr[i])
+        cairo_text_extents(cr, candidate, extents)
+        if extents.width > width then
+            table.insert(text_strings, string_part)
+            string_part = str_arr[i]
+        else
+            string_part = candidate
         end
-    else
-        str_strings = {str}
+        if i == #str_arr then
+            table.insert(text_strings, string_part)
+            break
+        end
     end
 
-    return str_strings
-end
-
------------------------
---- Обрезать строку ---
------------------------
-function cut_string(str, length, postfix)
-    local str_arr = string_to_strings(str, length)
-    if str_arr[2] ~= nil then
-        if postfix == nil then postfix = "" end
-        str = str_arr[1] .. postfix
-    end
-
-    return str
+    return text_strings
 end
 
 ---------------------------------------
@@ -252,31 +236,6 @@ function draw_text(coord, text, font_params, string_param)
         cairo_move_to (cr, x,y)
         cairo_show_text (cr, text)
     end
-end
-
---------------------------------
---- Разбить текст по строкам ---
---------------------------------
-function get_text_strings(text, width)
-    local text_strings = {}
-    local string_part = ''
-    local str_arr = split(text, " ")
-    for i in pairs(str_arr) do
-        local candidate = trim(string_part .. ' ' .. str_arr[i])
-        cairo_text_extents(cr, candidate, extents)
-        if extents.width > width then
-            table.insert(text_strings, string_part)
-            string_part = str_arr[i]
-        else
-            string_part = candidate
-        end
-        if i == #str_arr then
-            table.insert(text_strings, string_part)
-            break
-        end
-    end
-
-    return text_strings
 end
 
 --------------------------------------

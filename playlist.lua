@@ -113,6 +113,7 @@ function playerctl_player()
             color = '0xFE8D08',
             params = {
                 'title',
+                'xesam:url',
                 'mpris:length',
                 'position',
                 'duration(mpris:length - position)',
@@ -125,6 +126,7 @@ function playerctl_player()
             color = 'new_gradient',
             params = {
                 'title',
+                'xesam:url',
                 'mpris:length',
                 'position',
                 'duration(mpris:length - position)',
@@ -150,7 +152,7 @@ end
 ------------------------
 --- Отрсиовка плеера ---
 ------------------------
-function draw_player(icn, clr, title, total_time, playing_time, el_time, artist, mediaSrc, img)
+function draw_player(icn, clr, title, file, total_time, playing_time, el_time, artist, mediaSrc, img)
     local icon, color = get_icon(mediaSrc, icn, clr)
     draw_dash_bar({
         height = 7,
@@ -168,6 +170,10 @@ function draw_player(icn, clr, title, total_time, playing_time, el_time, artist,
     --if string.sub(mediaSrc, 14, 16) == 'vk.' then
     --    artist, title = trim(read_CLI("playerctl metadata -f '{{ title }}'")):match('(.*) — (.*)')
     --end
+    if title == "" then
+        local path = split(file, '/')
+        title = path[#path]
+    end
     if mediaSrc ~= nil and string.sub(mediaSrc, 14, 16) == 'hd.' then
         local kinopoisk_postfix = ' — смотреть онлайн в хорошем качестве — Кинопоиск'
         title = string.gsub(title, kinopoisk_postfix, "")
