@@ -108,7 +108,7 @@ end
 function playerctl_player()
     local players = {
         {
-            player = 'vlc',
+            player = '-p vlc',
             icon = scripts .. 'img/VLC.png',
             color = '0xFE8D08',
             params = {
@@ -121,7 +121,8 @@ function playerctl_player()
             },
         },
         {
-            player = 'plasma-browser-integration',
+            -- player = '-p plasma-browser-integration',
+            player = '',
             icon = scripts .. 'img/nocover.png',
             color = 'new_gradient',
             params = {
@@ -138,7 +139,7 @@ function playerctl_player()
     }
 
     for key in pairs(players) do
-        local command = "playerctl -p "..players[key].player.." metadata -f '{{ %s }}'"
+        local command = "playerctl "..players[key].player.." metadata -f '{{ %s }}'"
         local player = trim(read_CLI(string.format(command, table.concat(players[key].params,' }}💩{{ '))))
         if string.len(player) > 0 then
             local pattern = '💩(.*)'
