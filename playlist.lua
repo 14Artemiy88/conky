@@ -5,7 +5,9 @@ function player()
 end
 
 function mopidy_player()
-    local stsusjson = read_CLI('curl -d \'{"jsonrpc": "2.0", "id": 1, "method": "core.playback.get_state"}\' -H \'Content-Type: application/json\' http://localhost:6680/mopidy/rpc')
+    local stsusjson = read_CLI(
+            'curl -d \'{"jsonrpc": "2.0", "id": 1, "method": "core.playback.get_state"}\' -H \'Content-Type: application/json\' http://localhost:6680/mopidy/rpc'
+    )
     if (stsusjson ~= '{"jsonrpc": "2.0", "id": 1, "result": "playing"}') then return false end
 
     local URL = {
@@ -195,8 +197,8 @@ end
 --- Получение картинки ---
 --------------------------
 function get_img(mediaSrc, img)
-    local _, img_id = mediaSrc:match('(.*)-(.*)')
-    local path = '/tmp/' .. trim(img_id) .. '.png'
+    local _, img_id = img:match('(.*)/(.*)')
+    local path = '/run/user/1000/' .. trim(img_id) .. '.png'
     if file_exists(path) == false then
         local img_tml_command = 'ffmpeg -loglevel 0 -y -i %s -pix_fmt rgba -vf "scale=45:-1" "%s"'
         img = img:gsub( "=", [[\%1]]):gsub( "?", [[\%1]]):gsub( "&", [[\%1]])

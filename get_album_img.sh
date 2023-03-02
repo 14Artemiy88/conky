@@ -1,6 +1,6 @@
 #!/bin/bash
 
-COVER="/tmp/album_cover.png"
+COVER="/run/user/1000/album_cover.png"
 COVER_SIZE="40"
 DEFAULT_COVER="/home/artemiy/.conky/scripts/img/nocover.png"
 
