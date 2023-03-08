@@ -170,17 +170,10 @@ function draw_player(icn, clr, title, file, total_time, playing_time, el_time, a
             { color = def.color, alpha = .3 },
         }
     })
-    --if string.sub(mediaSrc, 14, 16) == 'vk.' then
-    --    artist, title = trim(read_CLI("playerctl metadata -f '{{ title }}'")):match('(.*) — (.*)')
-    --end
-    if title == "" then
-        local path = split(file, '/')
-        title = path[#path]
-    end
-    if mediaSrc ~= nil and string.sub(mediaSrc, 14, 16) == 'hd.' then
-        local kinopoisk_postfix = ' — смотреть онлайн в хорошем качестве — Кинопоиск'
-        title = string.gsub(title, kinopoisk_postfix, "")
-    end
+
+
+    title = prep_title(title, file, mediaSrc)
+
     text_by_left ({x=5, y=607}, artist, { size=13 })
     text_by_left ({x=55, y=643}, title, { size=13 },{width = 211, margin=15})
     text_by_right( {x=313, y=643}, '-'..el_time)
@@ -237,4 +230,22 @@ function time_format(time, symbol)
     if symbol == '' then return time end
 
     return string.gsub(time, symbol .."0", symbol)
+end
+
+function prep_title(title, file, mediaSrc)
+    --if string.sub(mediaSrc, 14, 16) == 'vk.' then
+    --    artist, title = trim(read_CLI("playerctl metadata -f '{{ title }}'")):match('(.*) — (.*)')
+    --end
+    if title == "" then
+        local path = split(file, '/')
+        title = path[#path]
+    end
+    if mediaSrc ~= nil and string.sub(mediaSrc, 14, 16) == 'hd.' then
+        local kinopoisk_postfix = ' — смотреть онлайн в хорошем качестве — Кинопоиск'
+        title = string.gsub(title, kinopoisk_postfix, "")
+    end
+
+    title = url_decode(title)
+
+    return title
 end

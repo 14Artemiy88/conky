@@ -167,6 +167,16 @@ function trim(s)
    return s:match "^%s*(.-)%s*$"
 end
 
+------------------------
+--- Декодировать URL ---
+------------------------
+function url_decode(url)
+    local hex_to_char = function(x)
+      return string.char(tonumber(x, 16))
+    end
+    return url:gsub("%%(%x%x)", hex_to_char)
+end
+
 ----------------------------------
 --- Получить цвет из градиента ---
 ----------------------------------
