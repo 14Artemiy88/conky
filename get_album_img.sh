@@ -10,7 +10,7 @@ album="${file%/*}"
 art=$(find "${album#file://}" -maxdepth 2 -iregex ".*/.*\(cover\|folder\|artwork\|front\).*[.]\(jpe?g\|png\|gif\|bmp\)" | head -n 1)
 
 if [ "$art" = "" ]; then
-  art=$(find "${album#file://}"  -maxdepth 1 | grep -im 1 ".*\.\(jpg\|png\|gif\|bmp\)")
+  art=$(find "${album#file://}" -maxdepth 1 | grep -im 1 ".*\.\(jpg\|png\|gif\|bmp\)")
 fi
 if [ "$art" = "" ]; then
   art=$DEFAULT_COVER
