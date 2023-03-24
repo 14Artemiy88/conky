@@ -163,7 +163,7 @@ function mopidy_player()
     text_by_left({ x = 3, y = 593 }, artist, { weight = weight_bold, size = 14 })
     text_by_left({ x = 3, y = 620 }, date .. ' ' .. current_album, nil, { width = 300, col = 1, size = 13, additional_text = album_el })
     text_by_right({ x = 313, y = 620 }, album_el, nil)
-    display_image({ coord = { x = 5, y = 633 }, img = '/tmp/album_cover.png' })
+    display_image({ coord = { x = 5, y = 633 }, img = '/run/user/1000/album_cover.png' })
     text_by_center({ x = 23, y = 692 }, index .. '/' .. total, { background = { color = '0x000000', alpha = .5 } })
     text_by_center({ x = 23, y = 709 }, totalTime, {})
     draw_album_progress_line(
