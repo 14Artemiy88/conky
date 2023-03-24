@@ -26,6 +26,21 @@ local plasma_browser_integration_player = {
         'mpris:artUrl',
     }
 }
+local spotify_player = {
+    player = '-p spotify',
+    icon = scripts .. 'img/nocover.png',
+    color = 'new_gradient',
+    params = {
+        'title',
+        'xesam:url',
+        'mpris:length',
+        'position',
+        'duration(mpris:length - position)',
+        'artist',
+        'kde:mediaSrc',
+        'mpris:artUrl',
+    }
+}
 local another_player = {
     player = '',
     icon = scripts .. 'img/nocover.png',
@@ -43,6 +58,7 @@ local another_player = {
 }
 local players = {
     vlc_player,
+    spotify_player,
     plasma_browser_integration_player,
     another_player,
 }
