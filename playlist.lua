@@ -1,61 +1,5 @@
-local vlc_player = {
-    player = '-p vlc',
-    icon = scripts .. 'img/VLC.png',
-    color = '0xFE8D08',
-    params = {
-        'title',
-        'xesam:url',
-        'mpris:length',
-        'position',
-        'duration(mpris:length - position)',
-        'xesam:artist',
-    },
-}
-local plasma_browser_integration_player = {
-    player = '-p plasma-browser-integration',
-    icon = scripts .. 'img/nocover.png',
-    color = 'new_gradient',
-    params = {
-        'title',
-        'xesam:url',
-        'mpris:length',
-        'position',
-        'duration(mpris:length - position)',
-        'artist',
-        'kde:mediaSrc',
-        'mpris:artUrl',
-    }
-}
-local spotify_player = {
-    player = '-p spotify',
-    icon = scripts .. 'img/nocover.png',
-    color = 'new_gradient',
-    params = {
-        'title',
-        'xesam:url',
-        'mpris:length',
-        'position',
-        'duration(mpris:length - position)',
-        'artist',
-        'kde:mediaSrc',
-        'mpris:artUrl',
-    }
-}
-local another_player = {
-    player = '',
-    icon = scripts .. 'img/nocover.png',
-    color = 'new_gradient',
-    params = {
-        'title',
-        'xesam:url',
-        'mpris:length',
-        'position',
-        'duration(mpris:length - position)',
-        'artist',
-        'kde:mediaSrc',
-        'mpris:artUrl',
-    }
-}
+dofile(scripts .. "players.lua")
+
 local players = {
     vlc_player,
     spotify_player,
@@ -64,7 +8,11 @@ local players = {
 }
 
 function player()
-    if (mopidy_player() == false and playerctl_player() == false) then
+    if (
+            mopidy_player() == false
+            and mpv_player() == false
+            and playerctl_player() == false
+    ) then
         draw_empty_player()
     end
 end
@@ -173,6 +121,30 @@ function mopidy_player()
     )
 
     return true
+end
+
+-----------------
+--- MPV Плеер ---
+-----------------
+function mpv_player()
+    local position = read_CLI("echo '{ \"command\": [\"get_property\", \"time-pos\"] }' | socat - /tmp/mpvsocket | jq .data | tr -d '\"' | cut -d'.' -f 1")
+    if position ~= "" and string.find(position, "Connection refused") == nil then
+        local duration = read_CLI("echo '{ \"command\": [\"get_property\", \"duration\"] }' | socat - /tmp/mpvsocket | jq .data | tr -d '\"' | cut -d'.' -f 1")
+        local remaining = read_CLI("echo '{ \"command\": [\"get_property\", \"time-remaining\"] }' | socat - /tmp/mpvsocket | jq .data | tr -d '\"' | cut -d'.' -f 1")
+        local title = read_CLI("echo '{ \"command\": [\"get_property\", \"media-title\"] }' | socat - /tmp/mpvsocket | jq .data | tr -d '\"'")
+
+        return draw_player(
+            scripts .. 'img/mpv.png',
+            'new_gradient',
+            title,
+            nil,
+            duration,
+            position,
+            time_format(remaining*1000)
+        )
+    end
+
+    return false
 end
 
 --------------------------
