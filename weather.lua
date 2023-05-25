@@ -135,13 +135,13 @@ end
 --- Градация цветов для температуры ---
 ---------------------------------------
 function temp_color(temp)
-    if temp > 30 then
+    if temp >= 30 then
         return "0xcc0000"
     end
-    if temp > 20 then
+    if temp >= 20 then
         return "0xffb4bb"
     end
-    if temp > 10 then
+    if temp >= 10 then
         return "0xffe0ba"
     end
     if temp > 0 then
@@ -159,7 +159,7 @@ function temp_color(temp)
     if temp > -30 then
         return "0x3c82e2"
     end
-    if -30 > temp then
+    if -30 >= temp then
         return "0x0000cc"
     end
 end

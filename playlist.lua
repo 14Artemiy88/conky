@@ -127,11 +127,11 @@ end
 --- MPV Плеер ---
 -----------------
 function mpv_player()
-    local position = read_CLI("echo '{ \"command\": [\"get_property\", \"time-pos\"] }' | socat - /tmp/mpvsocket | jq .data | tr -d '\"' | cut -d'.' -f 1")
+    local position = read_CLI("echo '{ \"command\": [\"get_property\", \"time-pos\"] }' | socat - /run/user/1000/mpvsocket | jq .data | tr -d '\"' | cut -d'.' -f 1")
     if position ~= "" and string.find(position, "Connection refused") == nil then
-        local duration = read_CLI("echo '{ \"command\": [\"get_property\", \"duration\"] }' | socat - /tmp/mpvsocket | jq .data | tr -d '\"' | cut -d'.' -f 1")
-        local remaining = read_CLI("echo '{ \"command\": [\"get_property\", \"time-remaining\"] }' | socat - /tmp/mpvsocket | jq .data | tr -d '\"' | cut -d'.' -f 1")
-        local title = read_CLI("echo '{ \"command\": [\"get_property\", \"media-title\"] }' | socat - /tmp/mpvsocket | jq .data | tr -d '\"'")
+        local duration = read_CLI("echo '{ \"command\": [\"get_property\", \"duration\"] }' | socat - /run/user/1000/mpvsocket | jq .data | tr -d '\"' | cut -d'.' -f 1")
+        local remaining = read_CLI("echo '{ \"command\": [\"get_property\", \"time-remaining\"] }' | socat - /run/user/1000/mpvsocket | jq .data | tr -d '\"' | cut -d'.' -f 1")
+        local title = read_CLI("echo '{ \"command\": [\"get_property\", \"media-title\"] }' | socat - /run/user/1000/mpvsocket | jq .data | tr -d '\"'")
 
         return draw_player(
             scripts .. 'img/mpv.png',
