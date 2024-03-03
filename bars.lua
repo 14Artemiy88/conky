@@ -50,7 +50,8 @@ function cpu_bar()
     local seg_margin = 5
     local width = 485
     local seg_count = math.ceil(width / (seg_width + seg_margin))
-    update_cpu_graph()
+
+    cpu_graph[update_num] = get_value('cpu')
     for i = update_num - seg_count, update_num do
         cairo_move_to(cr, start_x, y)
         local val = cpu_graph[i]
@@ -75,17 +76,9 @@ function cpu_bar()
     end
 end
 
---- Записывает показания CPU ---
-function update_cpu_graph()
-    cpu_graph[update_num] = get_value('cpu')
-end
-
 --- Значение conky параметра ---
 function get_value(name)
-    local str = string.format('${%s}', name)
-    str = conky_parse(str)
-
-    return tonumber(str)
+    return tonumber(conky_parse(string.format('${%s}', name)))
 end
 
 --- Переводит в проценты ---
