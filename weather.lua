@@ -66,7 +66,7 @@ function weather_by_hours(now_date)
             text_by_center({ x = xs[counter], y = ys[1] }, date.hour .. ':00')
             text_by_center({ x = xs[counter], y = ys[3] }, temp .. '°', { color = temp_color(temp) })
             display_image({ img = min_img_path .. response[i]['icon'] .. '.png', coord = { x = xs[counter] - 35 / 2, y = ys[2] } })
-            display_wind(response[i].wind.direction.scale_8, { x = xs[counter], y = ys[3] })
+            display_wind(response[i].wind.direction.scale_8, response[i].wind.speed.m_s, { x = xs[counter], y = ys[3] })
             counter = counter + 1
         end
         if counter > need_count then
@@ -94,7 +94,7 @@ function weather_by_days(now_date)
             text_by_center({ x = xs[counter] - 5, y = ys[3] }, temp_max .. '°', { color = temp_color(temp_max) })
             text_by_center({ x = xs[counter] + 5, y = ys[4] }, temp_min .. '°', { color = temp_color(temp_min) })
             display_image({ img = min_img_path .. response[i]['icon'] .. '.png', coord = { x = xs[counter] - 35 / 2, y = ys[2] } })
-            display_wind(response[i].wind.direction.max.scale_8, { x = xs[counter], y = ys[3] })
+            display_wind(response[i].wind.direction.max.scale_8, response[i].wind.speed.m_s, { x = xs[counter], y = ys[3] })
             counter = counter + 1
         end
         if counter > need_count then
@@ -106,8 +106,9 @@ end
 ------------------------------------
 --- Направление ветра стрелочкой ---
 ------------------------------------
-function display_wind(wind, coord)
+function display_wind(wind, speed, coord)
     local arrow = format_wind(wind)
+    --text_by_center({ x = coord.x - 25, y = coord.y - 25 }, speed)
     text_by_center({ x = coord.x - 10, y = coord.y - 25 }, arrow, { color = '0x000000', font = 'Arrows', size = 36 })
     text_by_center({ x = coord.x - 10, y = coord.y - 25 }, arrow, { font = 'Arrows', size = 27 })
 end

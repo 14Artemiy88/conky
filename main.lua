@@ -9,6 +9,7 @@ dofile(scripts .. "bars.lua")
 dofile(scripts .. "weather.lua")
 dofile(scripts .. "functions.lua")
 dofile(scripts .. "playlist.lua")
+dofile(scripts .. "timer.lua")
 
 function conky_main()
     ---=====================================================================---
@@ -21,6 +22,7 @@ function conky_main()
     ---=====================================================================---
     text_by_left({ x = 3, y = 1020 }, 'alt+SysRq+R / ctrl+alt+F2', { size = 10 })
     weather()
+    timer()
     cpu_frame()
     mem_frame()
     cpu_bar()
