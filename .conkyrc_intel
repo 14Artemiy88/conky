@@ -57,37 +57,7 @@ $alignr${voffset -50}${font LED:size=22}${time %d.%m.%Y}$font
 $alignr${voffset 7}${font Ubuntu:size=12}${time %A}$font
 #
 #
-#---------------- ЗАГРУЗКА СИСТЕМЫ ----------------
-#
-${voffset -15}
-#${color gray}${cpugraph cpu0 50,315}$color0
-#${color grey}CPU1  ${color ffb4bb}${cpubar cpu1 7, 278}$color0
-#${color grey}CPU2  ${color ffe0ba}${cpubar cpu2 7, 278}$color0
-#${color grey}CPU3  ${color fffebb}${cpubar cpu3 7, 278}$color0
-#${color grey}CPU4  ${color baffc9}${cpubar cpu4 7, 278}$color0
-#${color grey}CPU5  ${color bae1ff}${cpubar cpu5 7, 278}$color0
-#${color grey}CPU6  ${color aedfdb}${cpubar cpu6 7, 278}$color0
-#${color grey}CPU7  ${color 75c8cc}${cpubar cpu7 7, 278}$color0
-#${color grey}CPU8  ${color ead1f5}${cpubar cpu8 7, 278}$color0
-#
-${voffset 50}
-${color grey}CPU1  $color0
-${color grey}CPU2  $color0
-${color grey}CPU3  $color0
-${color grey}CPU4  $color0
-${color grey}CPU5  $color0
-${color grey}CPU6  $color0
-${color grey}CPU7  $color0
-${color grey}CPU8  $color0
-${voffset -8}
-# RAM #
-#${color grey}RAM ${color 3daee9}${membar 10, 225}$color0$alignr$mem$color0
-${color grey}RAM $alignr$mem$color0
-#
-# GPU #
-#${color gray}GPU ${color d76af9} ${lua_bar 10, 225 gpu}$color0 $alignr${exec nvidia-smi | grep % | cut -c 37-40} MB
-${color gray}GPU $alignr${exec nvidia-smi | grep % | cut -c 37-40} MB
-${voffset -8}
+${voffset 227}
 #---------------- TOP CPU ----------------
 #${color gray}CPU   ${color 00aa00}$hr$color0
 ${color gray}${goto 20}CPU$color0

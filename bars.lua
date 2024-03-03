@@ -9,10 +9,20 @@ function draw_dash_bar(bar)
     if type(bar.value) ~= 'number' then
         if bar.value == 'gpu' then
             value = conky_gpu()
+            text_by_left({ x = 270, y = bar.y + 5 }, value .. ' MB')
+            value = get_percents(value, 2048)
         else
             value = get_value(bar.value)
         end
     end
+
+    if bar.name then
+        text_by_left({ x = 7, y = bar.y + 4 }, bar.name)
+    end
+    if bar.suffix then
+        text_by_left({ x = 270, y = bar.y + 4 }, conky_parse('${' .. bar.suffix .. '}'))
+    end
+
 
     local seg_count = math.ceil(bar.width / (bar.seg_width + bar.seg_margin))
     local active_seg = math.ceil(seg_count * value / 100)
@@ -93,5 +103,5 @@ function conky_gpu()
         gpu = 0
     end
 
-    return get_percents(gpu, 2048)
+    return gpu
 end

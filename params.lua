@@ -1,5 +1,6 @@
 params = {
     {
+        name = 'CPU1',
         height = 10,
         width = 275,
         seg_width = 3,
@@ -13,6 +14,7 @@ params = {
         }
     },
     {
+        name = 'CPU2',
         height = 10,
         width = 275,
         seg_width = 3,
@@ -26,6 +28,7 @@ params = {
         }
     },
     {
+        name = 'CPU3',
         height = 10,
         width = 275,
         seg_width = 3,
@@ -39,6 +42,7 @@ params = {
         }
     },
     {
+        name = 'CPU4',
         height = 10,
         width = 275,
         seg_width = 3,
@@ -52,6 +56,7 @@ params = {
         }
     },
     {
+        name = 'CPU5',
         height = 10,
         width = 275,
         seg_width = 3,
@@ -65,6 +70,7 @@ params = {
         }
     },
     {
+        name = 'CPU6',
         height = 10,
         width = 275,
         seg_width = 3,
@@ -78,6 +84,7 @@ params = {
         }
     },
     {
+        name = 'CPU7',
         height = 10,
         width = 275,
         seg_width = 3,
@@ -91,6 +98,7 @@ params = {
         }
     },
     {
+        name = 'CPU8',
         height = 10,
         width = 275,
         seg_width = 3,
@@ -106,6 +114,8 @@ params = {
     },
     --- mem_bar ---
     {
+        name = 'RAM',
+        suffix = 'mem',
         height = 10,
         width = 220,
         seg_width = 3,
@@ -120,6 +130,7 @@ params = {
     },
     --- gpu_bar ---
     {
+        name = 'GPU',
         height = 10,
         width = 220,
         seg_width = 3,
