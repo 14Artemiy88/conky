@@ -18,8 +18,8 @@ conky.config = {
 	update_interval = 1,
 -- Minimum size of text area
 	minimum_height = 1024,
-	minimum_width = 310,
-	maximum_width = 310,
+	minimum_width = 460,
+	maximum_width = 460,
 	draw_shades = false,
 	draw_outline = false,
 	draw_borders = false,
@@ -53,8 +53,8 @@ conky.text = [[
 #
 #---------------- ЧАСЫ ----------------
 $color0${offset -5}${font LED:size=52}${time %H:%M:%S}$font
-$alignr${voffset -50}${font LED:size=22}${time %d.%m.%Y}$font
-$alignr${voffset 7}${font Ubuntu:size=12}${time %A}$font
+$alignr${voffset -50}${offset -146}${font LED:size=22}${time %d.%m.%Y}$font
+$alignr${voffset 7}${offset -146}${font Ubuntu:size=12}${time %A}$font
 #
 #
 #---------------- ЗАГРУЗКА СИСТЕМЫ ----------------
@@ -81,37 +81,36 @@ ${color grey}CPU7  $color0
 ${color grey}CPU8  $color0
 ${voffset -8}
 # RAM #
-#${color grey}RAM ${color 3daee9}${membar 10, 225}$color0$alignr$mem$color0
-${color grey}RAM $alignr$mem$color0
+#${color grey}RAM ${color 3daee9}${membar 10, 225}$color0$alignr${offset -150}$mem$color0
+${color grey}RAM $alignr${offset -150}$mem$color0
 #
 # GPU #
 #${color gray}GPU ${color d76af9} ${lua_bar 10, 225 gpu}$color0 $alignr${exec nvidia-smi | grep % | cut -c 37-40} MB
-${color gray}GPU $alignr${exec nvidia-smi | grep % | cut -c 37-40} MB
+${color gray}GPU $alignr${offset -150}${exec nvidia-smi | grep % | cut -c 37-40} MB
 ${voffset -8}
 #---------------- TOP CPU ----------------
 #${color gray}CPU   ${color 00aa00}$hr$color0
 ${color gray}${goto 20}CPU$color0
-${color lightgrey}   ${top name 1} $alignr${top cpu 1}   $color0
-${color lightgrey}   ${top name 2} $alignr${top cpu 2}   $color0
-${color lightgrey}   ${top name 3} $alignr${top cpu 3}   $color0
-${color lightgrey}   ${top name 4} $alignr${top cpu 4}   $color0
-${color lightgrey}   ${top name 5} $alignr${top cpu 5}   $color0
+${color lightgrey}   ${top name 1} $alignr${offset -155}${top cpu 1}   $color0
+${color lightgrey}   ${top name 2} $alignr${offset -155}${top cpu 2}   $color0
+${color lightgrey}   ${top name 3} $alignr${offset -155}${top cpu 3}   $color0
+${color lightgrey}   ${top name 4} $alignr${offset -155}${top cpu 4}   $color0
+${color lightgrey}   ${top name 5} $alignr${offset -155}${top cpu 5}   $color0
 #
 
 #---------------- TOP MEM ----------------
 #${color gray}MEM   ${color 3daee9}$hr$color0
 ${color gray}${goto 20}MEM$color0
-${color lightgrey}   ${top_mem name 1} $alignr${top_mem mem_res 1}   $color0
-${color lightgrey}   ${top_mem name 2} $alignr${top_mem mem_res 2}   $color0
-${color lightgrey}   ${top_mem name 3} $alignr${top_mem mem_res 3}   $color0
-${color lightgrey}   ${top_mem name 4} $alignr${top_mem mem_res 4}   $color0
-${color lightgrey}   ${top_mem name 5} $alignr${top_mem mem_res 5}   $color0
+${color lightgrey}   ${top_mem name 2} $alignr${offset -155}${top_mem mem_res 2}   $color0
+${color lightgrey}   ${top_mem name 3} $alignr${offset -155}${top_mem mem_res 3}   $color0
+${color lightgrey}   ${top_mem name 1} $alignr${offset -155}${top_mem mem_res 1}   $color0
+${color lightgrey}   ${top_mem name 4} $alignr${offset -155}${top_mem mem_res 4}   $color0
+${color lightgrey}   ${top_mem name 5} $alignr${offset -155}${top_mem mem_res 5}   $color0
 #
 ${voffset 7}
 #---------------- ИНТЕРНЕТ ----------------
-${color #baffc9}${font FontAwesome:size=15}$alignr${font ubuntu:size=12}${upspeed wlp5s0} / ${totalup wlp5s0}$color0
+${color #baffc9}${font FontAwesome:size=15}$alignr${offset -157}${font ubuntu:size=12}${upspeed enp0s31f6} / ${totalup enp0s31f6}$color0
 ${voffset -13}
-${color #ffb4bb}${font FontAwesome:size=15}$alignr${font ubuntu:size=12}${downspeed wlp5s0} / ${totaldown wlp5s0}$color0
+${color #ffb4bb}${font FontAwesome:size=15}$alignr${offset -157}${font ubuntu:size=12}${downspeed enp0s31f6} / ${totaldown enp0s31f6}$color0
 ${voffset -25}
 ]]
-
