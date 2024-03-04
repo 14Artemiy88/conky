@@ -11,6 +11,7 @@ dofile(scripts .. "functions.lua")
 dofile(scripts .. "playlist.lua")
 dofile(scripts .. "timer.lua")
 dofile(scripts .. "internet.lua")
+dofile(scripts .. "time.lua")
 
 function conky_main()
     ---=====================================================================---
@@ -21,8 +22,8 @@ function conky_main()
     cr = cairo_create(cs)
     update_num = tonumber(conky_parse('${updates}'))
     ---=====================================================================---
+    time()
     text_by_left({ x = 3, y = 1020 }, 'alt+SysRq+R / ctrl+alt+F2', { size = 10 })
-    weather()
     timer()
     internet()
     cpu_frame()
@@ -33,6 +34,7 @@ function conky_main()
     end
 
     player()
+    weather()
 
     cairo_destroy(cr)
     cr = nil

@@ -49,10 +49,4 @@ conky.config = {
 }
 
 
-conky.text = [[
-#
-#---------------- ЧАСЫ ----------------
-$color0${offset -5}${font LED:size=52}${time %H:%M:%S}$font
-$alignr${voffset -50}${font LED:size=22}${time %d.%m.%Y}$font
-$alignr${voffset 7}${font Ubuntu:size=12}${time %A}$font
-]]
+conky.text = [[]]
