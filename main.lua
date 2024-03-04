@@ -32,7 +32,6 @@ function conky_main()
         draw_dash_bar(params[k])
     end
 
-
     player()
 
     cairo_destroy(cr)

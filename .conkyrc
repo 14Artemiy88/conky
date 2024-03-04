@@ -55,27 +55,4 @@ conky.text = [[
 $color0${offset -5}${font LED:size=52}${time %H:%M:%S}$font
 $alignr${voffset -50}${font LED:size=22}${time %d.%m.%Y}$font
 $alignr${voffset 7}${font Ubuntu:size=12}${time %A}$font
-#
-#
-${voffset 227}
-#---------------- TOP CPU ----------------
-#${color gray}CPU   ${color 00aa00}$hr$color0
-${color gray}${goto 20}CPU$color0
-${color lightgrey}   ${top name 1} $alignr${top cpu 1}   $color0
-${color lightgrey}   ${top name 3} $alignr${top cpu 3}   $color0
-${color lightgrey}   ${top name 2} $alignr${top cpu 2}   $color0
-${color lightgrey}   ${top name 4} $alignr${top cpu 4}   $color0
-${color lightgrey}   ${top name 5} $alignr${top cpu 5}   $color0
-#
-
-#---------------- TOP MEM ----------------
-#${color gray}MEM   ${color 3daee9}$hr$color0
-${color gray}${goto 20}MEM$color0
-${color lightgrey}   ${top_mem name 2} $alignr${top_mem mem_res 2}   $color0
-${color lightgrey}   ${top_mem name 3} $alignr${top_mem mem_res 3}   $color0
-${color lightgrey}   ${top_mem name 1} $alignr${top_mem mem_res 1}   $color0
-${color lightgrey}   ${top_mem name 4} $alignr${top_mem mem_res 4}   $color0
-${color lightgrey}   ${top_mem name 5} $alignr${top_mem mem_res 5}   $color0
-#
-
 ]]

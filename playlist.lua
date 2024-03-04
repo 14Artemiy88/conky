@@ -181,8 +181,7 @@ function draw_player(icn, clr, title, file, total_time, playing_time, el_time,
     if artistFromTitle ~= "" then artist = artistFromTitle end
 
     text_by_left({x = 5, y = 607}, artist, {size = 13})
-    text_by_left({x = 55, y = 643}, title, {size = 13},
-                 {width = 211, margin = 15})
+    text_by_left({x = 55, y = 643}, title, {size = 13}, {width = 211, margin = 15})
     text_by_right({x = 313, y = 643}, "-" .. el_time)
     if img ~= nil and string.len(img) > 0 then
         get_img(mediaSrc, img)
