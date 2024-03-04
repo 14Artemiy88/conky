@@ -2,12 +2,12 @@
 --- Рамка вокруг блока CPU ---
 ------------------------------
 function cpu_frame()
-    text_by_left({ x = 20, y = 318 }, 'CPU', { color = '0xaaaaaa' })
+    text_by_left({ x = 20, y = 318 }, 'CPU', { color = '0xcccccc' })
 
     for i = 1, 5 do
         local y = 335 + (i - 1) * 16
-        text_by_left({ x = 17, y = y }, conky_parse('${top name ' .. i .. '}'), { color = '0xaaaaaa' })
-        text_by_right({ x = 305, y = y }, conky_parse('${top cpu ' .. i .. '}'), { color = '0xaaaaaa' })
+        text_by_left({ x = 17, y = y }, conky_parse('${top name ' .. i .. '}'), { color = '0xcccccc' })
+        text_by_right({ x = 305, y = y }, conky_parse('${top cpu ' .. i .. '}'), { color = '0xcccccc' })
     end
 
     cairo_move_to(cr, 15, 315)
@@ -26,12 +26,12 @@ end
 --- Рамка вокруг блока MEM ---
 ------------------------------
 function mem_frame()
-    text_by_left({ x = 20, y = 431 }, 'MEM', { color = '0xaaaaaa' })
+    text_by_left({ x = 20, y = 431 }, 'MEM', { color = '0xcccccc' })
 
     for i = 1, 5 do
         local y = 448 + (i - 1) * 16
-        text_by_left({ x = 17, y = y }, conky_parse('${top_mem name ' .. i .. '}'), { color = '0xaaaaaa' })
-        text_by_right({ x = 305, y = y }, conky_parse('${top_mem mem_res ' .. i .. '}'), { color = '0xaaaaaa' })
+        text_by_left({ x = 17, y = y }, conky_parse('${top_mem name ' .. i .. '}'), { color = '0xcccccc' })
+        text_by_right({ x = 305, y = y }, conky_parse('${top_mem mem_res ' .. i .. '}'), { color = '0xcccccc' })
     end
 
     cairo_move_to(cr, 15, 427)
