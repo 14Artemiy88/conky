@@ -22,7 +22,8 @@ end
 --- Запрос на API ---
 ---------------------
 function get_weather(key, type, params)
-    local url = "curl -H 'X-Gismeteo-Token: " .. token .. "' 'https://api.gismeteo.net/v2/weather/" .. type .. "/4517/" .. params .. "'"
+    local url = "curl -H 'X-Gismeteo-Token: " ..
+    token .. "' 'https://api.gismeteo.net/v2/weather/" .. type .. "/4517/" .. params .. "'"
     local f = io.popen(url)
     weather_data[key] = f:read("*a")
     f:close()
@@ -32,7 +33,11 @@ end
 --- Актуальная погода ---
 -------------------------
 function weather_now()
-    if weather_data[1] == '' or os.date("%M:%S") == '00:01' or os.date("%M:%S") == '30:01' then
+    if weather_data[1] == ''
+        or os.date("%M:%S") == '00:01'
+        or os.date("%M:%S") == '20:01'
+        or os.date("%M:%S") == '40:01'
+    then
         get_weather(1, 'current', '')
     end
     local response = json.decode(weather_data[1]).response
@@ -94,7 +99,8 @@ function weather_by_days(now_date)
             text_by_center({ x = xs[counter] - 5, y = ys[3] }, temp_max .. '°', { color = temp_color(temp_max) })
             text_by_center({ x = xs[counter] + 5, y = ys[4] }, temp_min .. '°', { color = temp_color(temp_min) })
             display_image({ img = min_img_path .. response[i]['icon'] .. '.png', coord = { x = xs[counter] - 35 / 2, y = ys[2] } })
-            display_wind(response[i].wind.direction.max.scale_8, response[i].wind.speed.m_s, { x = xs[counter], y = ys[3] })
+            display_wind(response[i].wind.direction.max.scale_8, response[i].wind.speed.m_s,
+                { x = xs[counter], y = ys[3] })
             counter = counter + 1
         end
         if counter > need_count then
@@ -118,7 +124,7 @@ end
 ------------------------------------------------------------
 function format_wind(wind)
     local arrows = {
-        '', -- Штиль
+        '',  -- Штиль
         'd', -- Северный
         'f', -- Северо-восточный
         'b', -- Восточный

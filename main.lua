@@ -32,9 +32,8 @@ function conky_main()
     for k in pairs(params) do
         draw_dash_bar(params[k])
     end
-
-    player()
     weather()
+    player()
 
     cairo_destroy(cr)
     cr = nil

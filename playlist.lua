@@ -1,10 +1,5 @@
 dofile(scripts .. "players.lua")
 
-local players = {
-    vlc_player, spotify_player, plasma_browser_integration_player,
-    another_player
-}
-
 function player()
     if mopidy_player() == false and mpv_player() == false and playerctl_player() ==
         false then draw_empty_player() end
@@ -143,17 +138,15 @@ end
 --------------------------
 function playerctl_player()
     for key in pairs(players) do
-        local command = "playerctl " .. players[key].player ..
-                            " metadata -f '{{ %s }}'"
-        local player = trim(read_CLI(string.format(command, table.concat(
-                                                       players[key].params,
-                                                       " }}💩{{ "))))
+        local command = "playerctl " .. players[key].player .. " metadata -f '{{ %s }}'"
+        local player = trim(read_CLI(string.format(command, table.concat(players[key].params, " }}💩{{ "))))
         if string.len(player) > 0 then
             local pattern = "💩(.*)"
-            return draw_player(players[key].icon, players[key].color,
-                               player:match(
-                                   "(.*)" ..
-                                       pattern:rep(#players[key].params - 1)))
+            return draw_player(
+            	players[key].icon,
+            	players[key].color,
+                player:match("(.*)" .. pattern:rep(#players[key].params - 1))
+            )
         end
     end
 
