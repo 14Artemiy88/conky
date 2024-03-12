@@ -32,6 +32,7 @@ function conky_main()
     for k in pairs(params) do
         draw_dash_bar(params[k])
     end
+
     weather()
     player()
 
