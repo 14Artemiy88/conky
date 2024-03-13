@@ -154,6 +154,7 @@ function playerctl_player()
             )
         end
     end
+
     local player = trim(read_CLI("playerctl metadata -f '{{ title }}'"))
     if string.len(player) > 0 then
         return draw_player(scripts .. "img/nocover.png", "new_gradient", player)
@@ -188,7 +189,8 @@ function draw_player(icn, clr, title, file, total_time, playing_time, el_time, a
 
     text_by_left({ x = 5, y = 607 }, artist, { size = 13 })
     text_by_left({ x = 55, y = 643 }, title, { size = 13 }, { width = 211, margin = 15 })
-    text_by_right({ x = 313, y = 643 }, "-" .. time_format(el_time))
+    if el_time == nil then el_time = "-:--" end
+    text_by_right({ x = 313, y = 643 }, "-" .. el_time)
 
     if img ~= nil and string.len(img) > 0 then
         get_img(mediaSrc, img)
