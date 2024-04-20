@@ -15,9 +15,8 @@ dofile(scripts .. "time.lua")
 
 function conky_main()
     ---=====================================================================---
-    if conky_window == nil then
-        return
-    end
+    if conky_window == nil then return end
+
     local cs = cairo_xlib_surface_create(
         conky_window.display,
         conky_window.drawable,
@@ -42,6 +41,8 @@ function conky_main()
     weather()
     player()
 
-    cairo_destroy(cr)
+	cairo_destroy(cr)
+	cairo_surface_destroy(cs)
+
     cr = nil
 end

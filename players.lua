@@ -43,6 +43,21 @@ players = {
         }
     },
     {
+        player = '-p org.telegram.desktop metadata',
+        icon = scripts .. 'img/nocover.png',
+        color = 'new_gradient',
+        params = {
+            'title',
+            'xesam:url',
+            'mpris:length',
+            'position',
+            'duration(mpris:length - position)',
+            'artist',
+            'kde:mediaSrc',
+            'mpris:artUrl',
+        }
+    },
+    {
         player = '',
         icon = scripts .. 'img/nocover.png',
         color = 'new_gradient',

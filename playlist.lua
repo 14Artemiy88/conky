@@ -1,5 +1,6 @@
 dofile(scripts .. "players.lua")
 
+-- TO DO переделать на цикл по playerctl --list-all
 function player()
     if mopidy_player() == false and
         mpv_player() == false and
