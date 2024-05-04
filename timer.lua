@@ -3,6 +3,7 @@ file = nil
 function timer()
     local timers = {}
     local counter = 0
+    file = nil
     for filename in io.popen('find /run/user/1000/timer/ -type f -name "*"'):lines() do
         file, err = io.open(filename, "r")
         if file then
